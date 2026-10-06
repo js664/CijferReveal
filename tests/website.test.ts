@@ -30,10 +30,11 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
  expect(html).not.toContain('api.github.com');
 });
 
-it('keeps the FAQ limited to the animation help',()=>{
+it('includes animation help and the expected store availability in the FAQ',()=>{
  const faq=page.querySelector('#faq-dialog')!;
  expect([...faq.querySelectorAll('summary')].map(node=>node.textContent?.trim())).toEqual([
-  'De draaianimatie ontbreekt. Hoe los ik dat op?'
+  'De draaianimatie ontbreekt. Hoe los ik dat op?',
+  'Wanneer komt CijferReveal in de Chrome Web Store en Firefox Add-ons?'
  ]);
  expect(faq.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
  expect(faq.textContent).not.toContain('Een kleiner scherm');

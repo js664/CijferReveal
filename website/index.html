@@ -145,6 +145,7 @@
       .store-button:disabled { opacity: .78; }
       .store-button:disabled:hover { background: #171e27; border-color: #ffffff20; transform: none; box-shadow: none; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
+      .brand-note { margin: 18px 0 0; color: #82909f; font-size: 11px; line-height: 1.55; }
       footer { margin-top: 26px; color: #929eac; font-size: 12px; letter-spacing: .015em; }
       @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       @media (max-width: 480px) {
@@ -177,6 +178,10 @@
         <img src="assets/chrome.webp" width="24" height="24" alt="" aria-hidden="true" />
         <span>Chrome Web Store — Binnenkort</span>
       </button>
+      <button class="repo-link store-button" type="button" disabled aria-disabled="true">
+        <img src="assets/firefox.svg" width="24" height="24" alt="" aria-hidden="true" />
+        <span>Firefox — Binnenkort</span>
+      </button>
       <a class="repo-link" href="https://github.com/js664/CijferReveal" target="_blank" rel="noopener noreferrer">
         <span class="link-end">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.08c-3.1.67-3.75-1.32-3.75-1.32-.5-1.29-1.24-1.63-1.24-1.63-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.14 3.54 1.63.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.15a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.15 3.04-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3.01 0 4.29-2.61 5.23-5.1 5.5.4.34.75 1 .75 2.02v3c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>
@@ -188,6 +193,7 @@
         <span>Hulp en veelgestelde vragen</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
+      <p class="brand-note">Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is niet verbonden aan Mozilla.</p>
     </main>
   </body>
 </html>

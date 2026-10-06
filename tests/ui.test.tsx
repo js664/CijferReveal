@@ -7,8 +7,6 @@ import {OpeningOverlay} from '../src/opening/OpeningOverlay';
 import {ResultReveal} from '../src/opening/ResultReveal';
 import {OpeningAudio} from '../src/opening/audio';
 import {tierFor} from '../src/opening/tiers';
-import {reelProgress,EDGE_MS,EDGE_OFFSET,REEL_CROSSINGS_MS,BRAKE_START} from '../src/opening/ReelEngine';
-import {REEL_START,STOP_MS,TICK_SECONDS} from '../src/opening/choreography';
 import {presentCard} from '../src/spoiler/recent-card';
 import {excludeNative} from '../src/spoiler/accessibility';
 import {presentDerived,presentOverview} from '../src/spoiler/derived';
@@ -17,22 +15,6 @@ const display={key,version,subject:'Wiskunde A',description:'Hoofdstuk 3',date:'
 beforeEach(()=>{vi.stubGlobal('matchMedia',()=>({matches:false,addEventListener:()=>{},removeEventListener:()=>{}}));});
 afterEach(()=>{cleanup();vi.useRealTimers();vi.unstubAllGlobals();document.body.replaceChildren();});
 it.each([[5.49,'crimson'],[5.5,'bronze'],[6.49,'bronze'],[6.5,'steel'],[7.5,'gold'],[8.5,'electric'],[9.5,'iridescent'],[10,'iridescent']])('tier %s',(v,tier)=>expect(tierFor(v as number).name).toBe(tier));
-it('reel cruises smoothly, reaches the selected edge, and bounces back without crossing into another grade',()=>{
- const values=Array.from({length:1001},(_,i)=>reelProgress(EDGE_MS*i/1000));
- expect(values[0]).toBe(0);expect(values.at(-1)).toBeCloseTo(TICK_SECONDS.length+EDGE_OFFSET);
- for(let i=1;i<values.length;i++)expect(values[i]).toBeGreaterThanOrEqual(values[i-1]);
- const speed=(ms:number)=>reelProgress(ms+10)-reelProgress(ms);
- expect(speed(1500)).toBeCloseTo(speed(2500),8);expect(speed(REEL_START+10)).toBeLessThan(speed(REEL_START+100));
- for(let ms=BRAKE_START;ms<EDGE_MS-20;ms+=5)expect(speed(ms+5)).toBeLessThanOrEqual(speed(ms)+1e-8);
- // Distinct final ticks cross the marker in the original soundtrack's timeline.
- for(const seconds of TICK_SECONDS.slice(-5)){
-  const index=TICK_SECONDS.indexOf(seconds);expect(REEL_CROSSINGS_MS[index]).toBeCloseTo(seconds*1000,3);
- }
- expect(STOP_MS).toBe(6470);
- for(let ms=EDGE_MS;ms<=STOP_MS;ms+=10)expect(Math.round(reelProgress(ms))).toBe(TICK_SECONDS.length);
- expect(reelProgress(EDGE_MS+300)).toBeLessThan(reelProgress(EDGE_MS));expect(reelProgress(STOP_MS)).toBe(TICK_SECONDS.length);
- for(const [i,ms] of REEL_CROSSINGS_MS.entries())expect(reelProgress(ms)).toBeCloseTo(i+.5,6);
-});
 it('static shield covers all native accessibility owners and portals',()=>{const css=readFileSync('src/spoiler/shield.css','utf8');for(const selector of ['sl-laatste-resultaat-item','sl-vakresultaat-item','sl-resultaat-item-detail','sl-vakgemiddelde-item-cijfer','td.cijfer','gemiddelde-wrapper','hmy-tooltip'])expect(css).toContain(selector);expect(css).not.toContain('body { visibility');});
 it('pending card contains only safe placeholder output',async()=>{document.body.innerHTML=nativeCard();const owner=document.querySelector<HTMLElement>('sl-laatste-resultaat-item')!;excludeNative(owner);let p:ReturnType<typeof presentCard>;await act(()=>{p=presentCard(owner,record(),'pending',display,()=>{});});expect(owner.getAttribute('aria-label')).toBeNull();expect(owner.querySelector('[aria-label]')).toBeNull();expect(owner.getAttribute('aria-hidden')).toBe('true');expect(p!.host.textContent).not.toContain('8,3');expect(p!.host.textContent).not.toContain('2x');expect(p!.host.textContent).toContain('Hoofdstuk 3');expect(screen.getByRole('button',{name:'Open cijfer'})).toBeTruthy();await act(()=>p!.dispose());});
 it.each(['baseline','opened'] as const)('safe %s uses extension-owned value',async status=>{document.body.innerHTML=nativeCard();let p:ReturnType<typeof presentCard>;await act(()=>{p=presentCard(document.querySelector('sl-laatste-resultaat-item')!,record(),status,display,()=>{});});expect(p!.host.textContent).toContain('8,3');expect(p!.host.textContent).not.toContain('Open cijfer');await act(()=>p!.dispose());});

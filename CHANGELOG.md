@@ -1,5 +1,11 @@
 # Wat is er veranderd?
 
+## Versie 0.2.6 — 6 oktober 2026
+
+- De cijferrol draait soepeler en landt op verschillende manieren.
+- Het echte cijfer eindigt altijd midden op de kaart.
+- Het originele geluid is terug. Het einde volgt de landing.
+
 ## Versie 0.2.5
 
 - De cijferrol toont nu meer mogelijke cijfers, van 2,0 tot 9,9. De rol stopt nog steeds op het echte cijfer.

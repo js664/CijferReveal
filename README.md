@@ -6,7 +6,7 @@ Met CijferReveal open je SOMtoday-cijfers één voor één, met een korte animat
 
 Dit werkt met Chrome, Edge, Brave en Helium op een computer. Je hoeft niet te kunnen programmeren.
 
-1. Download **pack-opening-voor-somtoday.zip** bij de [nieuwste versie](https://github.com/js664/CijferReveal/releases/latest). Download dus niet de broncode-ZIP van GitHub.
+1. Download **CijferReveal.zip** via [de website](https://js664.github.io/CijferReveal/).
 2. Pak de ZIP uit in een map en laat de map daar staan.
 3. Open de extensiepagina van je browser:
    - Chrome: `chrome://extensions`

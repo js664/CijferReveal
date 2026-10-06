@@ -1,4 +1,3 @@
-// Main transients in the original MP3. Late tick echoes are not extra cards.
-export const TICK_SECONDS=[.609,.733,.833,.963,1.078,1.207,1.322,1.452,1.576,1.696,1.821,1.951,2.06,2.185,2.315,2.439,2.564,2.704,2.814,2.938,3.078,3.193,3.302,3.422,3.577,3.697,3.926,4.265,4.684,5.308];
-export const REEL_START=447,STOP_MS=6470,REVEAL_MS=STOP_MS,REDUCED_STOP_MS=650;
-export const TARGET_INDEX=4+TICK_SECONDS.length;
+export const REDUCED_STOP_MS=650;
+// Measured main transients in the original recording, before the 3.5s handoff.
+export const ORIGINAL_MAIN_TICKS_MS=[609,733,833,963,1078,1207,1322,1452,1576,1696,1821,1951,2060,2185,2315,2439,2564,2704,2814,2938,3078,3193,3302,3422];

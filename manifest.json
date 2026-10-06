@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Pack Opening voor SOMtoday",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Open zichtbare cijfers met een lokale pack opening. Cijfers zijn vooraf bepaald.",
   "minimum_chrome_version": "111",
   "permissions": [

@@ -45,6 +45,8 @@ jobs:
         run: npm run validate
       - name: Installeer Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Bouw ontwikkelbuild voor de diagnosetest
+        run: npm run build:dev
       - name: Browser tests
         run: npm run test:e2e
       - name: Bouw developerbuild

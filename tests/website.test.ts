@@ -8,18 +8,31 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
  expect(actions.map(node=>node.textContent?.replace(/\s+/g,' ').trim())).toEqual([
   'Download laatste versie v__EXTENSION_VERSION__',
   'Chrome Web Store — Binnenkort',
-  'Bekijk broncode op GitHub'
+  'Firefox — Binnenkort',
+  'Bekijk broncode op GitHub',
+  'Hulp en veelgestelde vragen'
  ]);
  expect(actions[0].tagName).toBe('A');
  expect(actions[0].getAttribute('href')).toBe('https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip');
  expect(actions[1].tagName).toBe('BUTTON');
  expect((actions[1] as HTMLButtonElement).disabled).toBe(true);
- expect(actions[2].getAttribute('href')).toBe('https://github.com/js664/CijferReveal');
- expect(actions[2].getAttribute('target')).toBe('_blank');
- expect(actions[2].getAttribute('rel')).toContain('noopener');
+ expect(actions[2].tagName).toBe('BUTTON');
+ expect((actions[2] as HTMLButtonElement).disabled).toBe(true);
+ expect(actions[3].getAttribute('href')).toBe('https://github.com/js664/CijferReveal');
+ expect(actions[3].getAttribute('target')).toBe('_blank');
+ expect(actions[3].getAttribute('rel')).toContain('noopener');
+ expect(actions[4].getAttribute('href')).toBe('faq.html');
  const html=readFileSync('website/index.html','utf8');
  expect(html).toContain('__EXTENSION_VERSION__');
- expect(html).toContain('Bestand: <span id="download-filename">CijferReveal.zip</span> · versie v__EXTENSION_VERSION__');
+ expect(html).not.toContain('download-note');
  expect(html).toContain("https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip");
  expect(html).not.toContain('api.github.com');
+});
+
+it('keeps the FAQ limited to the animation help',()=>{
+ const faq=new DOMParser().parseFromString(readFileSync('website/faq.html','utf8'),'text/html');
+ expect([...faq.querySelectorAll('summary')].map(node=>node.textContent?.trim())).toEqual([
+  'De draaianimatie ontbreekt. Hoe los ik dat op?'
+ ]);
+ expect(faq.body.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
 });

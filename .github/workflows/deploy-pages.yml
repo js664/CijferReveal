@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "website/**"
+      - "manifest.json"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -29,6 +30,17 @@ jobs:
     steps:
       - name: Haal de bestanden op
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Zet de extensieversie op de pagina
+        run: |
+          node --input-type=module -e '
+            import {readFileSync, writeFileSync} from "node:fs";
+            const {version} = JSON.parse(readFileSync("manifest.json", "utf8"));
+            if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error("Ongeldige extensieversie");
+            const path = "website/index.html";
+            const html = readFileSync(path, "utf8");
+            if (!html.includes("__EXTENSION_VERSION__")) throw new Error("Versieplaceholder ontbreekt");
+            writeFileSync(path, html.replaceAll("__EXTENSION_VERSION__", version));
+          '
       - name: Bereid GitHub Pages voor
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Voeg de website toe

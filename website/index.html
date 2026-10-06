@@ -145,6 +145,35 @@
       .store-button:disabled:hover { background: #171e27; border-color: #ffffff20; transform: none; box-shadow: none; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
       .brand-note { max-width: none; margin: 18px 0 0; color: #82909f; font-size: 11px; line-height: 1.55; }
+      .faq-dialog {
+        width: min(560px, calc(100% - 36px));
+        max-height: calc(100svh - 36px);
+        padding: clamp(24px, 5vw, 36px);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #171e27;
+        color: var(--ink);
+        font: inherit;
+        opacity: 0;
+        transform: translateY(12px) scale(.98);
+        transition: opacity 220ms ease, transform 220ms cubic-bezier(.22,1,.36,1);
+      }
+      .faq-dialog.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+      .faq-dialog::backdrop { background: #05080dc4; opacity: 0; transition: opacity 220ms ease; }
+      .faq-dialog.is-visible::backdrop { opacity: 1; }
+      body:has(.faq-dialog[open]) { overflow: hidden; }
+      .faq-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+      .faq-heading h2 { margin: 0; font: 600 clamp(28px, 6vw, 38px)/1.1 Georgia, serif; letter-spacing: -.03em; text-wrap: balance; }
+      .faq-close { display: grid; place-items: center; width: 40px; height: 40px; flex: none; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: #ffffff08; color: var(--ink); cursor: pointer; }
+      .faq-close:hover { background: #ffffff16; }
+      .faq-close svg { width: 20px; height: 20px; }
+      .faq-dialog summary:focus-visible, .faq-close:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+      .faq-dialog details { border-top: 1px solid var(--line); }
+      .faq-dialog summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; font-size: 15px; line-height: 1.5; font-weight: 600; cursor: pointer; list-style: none; }
+      .faq-dialog summary::-webkit-details-marker { display: none; }
+      .faq-dialog summary::after { content: ''; width: 8px; height: 8px; flex: none; border-right: 1.5px solid var(--blue); border-bottom: 1.5px solid var(--blue); transform: rotate(45deg); transition: transform 180ms ease; }
+      .faq-dialog details[open] summary::after { transform: rotate(225deg); }
+      .faq-dialog p { max-width: none; margin: 0 0 4px; font-size: 14px; line-height: 1.75; }
       footer { margin-top: 26px; color: #929eac; font-size: 12px; letter-spacing: .015em; }
       @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       @media (max-width: 480px) {
@@ -186,11 +215,24 @@
         </span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
-      <a class="repo-link faq-link" href="faq.html">
+      <a class="repo-link faq-link" href="#faq" aria-haspopup="dialog" aria-controls="faq-dialog">
         <span>Hulp en veelgestelde vragen</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
       <p class="brand-note">Chrome is een merk van Google. Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is onafhankelijk.</p>
     </main>
+    <dialog class="faq-dialog" id="faq-dialog" aria-labelledby="faq-title">
+      <div class="faq-heading">
+        <h2 id="faq-title">Veelgestelde vragen</h2>
+        <button class="faq-close" type="button" aria-label="FAQ sluiten" autofocus>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <details>
+        <summary>De draaianimatie ontbreekt. Hoe los ik dat op?</summary>
+        <p>Waarschijnlijk staat bewegingsvermindering aan. Zet op Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong> en herlaad daarna SOMtoday.</p>
+      </details>
+    </dialog>
+    <script src="faq.js" defer></script>
   </body>
 </html>

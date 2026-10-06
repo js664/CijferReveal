@@ -21,7 +21,8 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
  expect(actions[3].getAttribute('href')).toBe('https://github.com/js664/CijferReveal');
  expect(actions[3].getAttribute('target')).toBe('_blank');
  expect(actions[3].getAttribute('rel')).toContain('noopener');
- expect(actions[4].getAttribute('href')).toBe('faq.html');
+ expect(actions[4].getAttribute('href')).toBe('#faq');
+ expect(actions[4].getAttribute('aria-controls')).toBe('faq-dialog');
  const html=readFileSync('website/index.html','utf8');
  expect(html).toContain('__EXTENSION_VERSION__');
  expect(html).not.toContain('download-note');
@@ -30,9 +31,10 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
 });
 
 it('keeps the FAQ limited to the animation help',()=>{
- const faq=new DOMParser().parseFromString(readFileSync('website/faq.html','utf8'),'text/html');
+ const faq=page.querySelector('#faq-dialog')!;
  expect([...faq.querySelectorAll('summary')].map(node=>node.textContent?.trim())).toEqual([
   'De draaianimatie ontbreekt. Hoe los ik dat op?'
  ]);
- expect(faq.body.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
+ expect(faq.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
+ expect(faq.textContent).not.toContain('Een kleiner scherm');
 });

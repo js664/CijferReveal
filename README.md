@@ -1,5 +1,9 @@
 # CijferReveal
 
+Je kunt de nieuwste versie direct downloaden via [onze website](https://js664.github.io/CijferReveal/). Je hoeft niet naar GitHub Releases.
+
+**Geen draaianimatie?** Zet in Windows **Instellingen → Toegankelijkheid → Visuele effecten → Animatie-effecten** aan en herlaad SOMtoday. Een kleiner scherm schakelt de animatie niet uit.
+
 Met CijferReveal open je SOMtoday-cijfers één voor één, met een korte animatie en geluid. Je cijfer staat al vast. De extensie verandert het nooit. Open cijfers vind je terug in de inventaris.
 
 ## Installeren

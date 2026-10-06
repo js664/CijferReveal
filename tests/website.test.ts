@@ -6,7 +6,7 @@ const page=new DOMParser().parseFromString(readFileSync('website/index.html','ut
 it('puts the permanent latest ZIP download first and keeps the other actions in the requested order',()=>{
  const actions=[...page.querySelectorAll('main > a, main > button')];
  expect(actions.map(node=>node.textContent?.replace(/\s+/g,' ').trim())).toEqual([
-  'Download laatste versie',
+  'Download laatste versie …',
   'Chrome Web Store — Binnenkort',
   'Bekijk broncode op GitHub'
  ]);
@@ -17,5 +17,8 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
  expect(actions[2].getAttribute('href')).toBe('https://github.com/js664/CijferReveal');
  expect(actions[2].getAttribute('target')).toBe('_blank');
  expect(actions[2].getAttribute('rel')).toContain('noopener');
- expect(readFileSync('website/index.html','utf8')).not.toContain('api.github.com');
+ const html=readFileSync('website/index.html','utf8');
+ expect(html).toContain("fetch('https://api.github.com/repos/js664/CijferReveal/releases/latest'");
+ expect(html).toContain("https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip");
+ expect(html).toContain('CijferReveal.zip');
 });

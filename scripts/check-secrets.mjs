@@ -22,7 +22,10 @@ let findings=0,scanned=0;
 for(const file of files){
  if(binary.test(file))continue;
  if(/(?:^|[\\/])\.env(?:\.|$)/.test(file)&&!file.endsWith('.example')||/\.(?:pem|key|p12|pfx|har)$/i.test(file)){console.error(`${file}: gevoelig lokaal bestand`);findings++;continue;}
- const body=staged?execFileSync('git',['show',`:${file.replaceAll('\\','/')}`],{encoding:'utf8',stdio:['ignore','pipe','ignore']}):await readFile(resolve(root,file),'utf8');scanned++;
+ let body;
+ if(staged)body=execFileSync('git',['show',`:${file.replaceAll('\\','/')}`],{encoding:'utf8',stdio:['ignore','pipe','ignore']});
+ else try{body=await readFile(resolve(root,file),'utf8');}catch(error){if(error?.code==='ENOENT')continue;throw error;}
+ scanned++;
  for(const [kind,pattern] of rules){pattern.lastIndex=0;for(const match of body.matchAll(pattern)){console.error(`${file}:${body.slice(0,match.index).split('\n').length}: ${kind} (waarde verborgen)`);findings++;}}
 }
 if(findings){console.error(`${findings} mogelijke geheimen/persoonlijke paden gevonden. Publicatie gestopt.`);process.exitCode=1;}

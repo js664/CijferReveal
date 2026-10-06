@@ -55,7 +55,7 @@
         box-shadow: inset 0 1px #ffffff19, 0 8px 22px #0003;
       }
       h1 {
-        margin: 0;
+        margin: 0 0 24px;
         font-family: Georgia, "Times New Roman", serif;
         font-size: clamp(34px, 7vw, 48px);
         line-height: 1.08;
@@ -63,12 +63,7 @@
         letter-spacing: -.035em;
         text-wrap: balance;
       }
-      .intro {
-        margin: 14px 0 26px;
-        color: var(--muted);
-        font-size: 15px;
-        line-height: 1.6;
-      }
+      .faq-list { display: grid; gap: 10px; }
       details {
         border: 1px solid #ffffff24;
         border-radius: 11px;
@@ -145,15 +140,21 @@
     <main>
       <div class="mark" aria-hidden="true">CR</div>
       <h1>Veelgestelde vragen</h1>
-      <p class="intro">Snelle hulp bij CijferReveal.</p>
-      <details>
-        <summary>De draaianimatie ontbreekt. Hoe los ik dat op?</summary>
-        <div class="answer">
-          <p>Waarschijnlijk staat bewegingsvermindering aan. Zet op Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong> en herlaad daarna SOMtoday.</p>
-          <p>Een kleiner scherm schakelt de draai-animatie niet uit.</p>
-          <p>Je kunt de nieuwste versie direct downloaden via de <a href="./">downloadpagina</a>. Je hoeft daarvoor niet naar GitHub Releases.</p>
-        </div>
-      </details>
+      <div class="faq-list">
+        <details>
+          <summary>De draaianimatie ontbreekt. Hoe los ik dat op?</summary>
+          <div class="answer">
+            <p>Waarschijnlijk staat bewegingsvermindering aan. Zet op Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong> en herlaad daarna SOMtoday.</p>
+            <p>Een kleiner scherm schakelt de draai-animatie niet uit.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Hoe download ik de nieuwste versie?</summary>
+          <div class="answer">
+            <p>Ga naar de <a href="./">downloadpagina</a> en klik op <strong>Download laatste versie</strong>. Je hoeft GitHub Releases niet te openen.</p>
+          </div>
+        </details>
+      </div>
       <a class="back-link" href="./">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7"/></svg>
         Terug naar downloaden

@@ -70,7 +70,7 @@
         box-shadow: inset 0 1px #ffffff19, 0 8px 22px #0003;
       }
       h1 {
-        margin: 0;
+        margin: 0 0 26px;
         font-family: Georgia, "Times New Roman", serif;
         font-size: clamp(36px, 8vw, 54px);
         line-height: 1.04;
@@ -111,7 +111,6 @@
       .download-link { margin-bottom: 10px; }
       .download-link .link-end { gap: 13px; }
       .download-link .download-icon { width: 23px; height: 23px; }
-      .download-note { margin: -1px auto 17px; color: #aab7c6; font-size: 13px; line-height: 1.5; }
       .faq-link { margin-top: 10px; }
       .download-version { display: inline-block; padding: 5px 8px; border: 1px solid #18243233; border-radius: 999px; background: #16223124; font-size: 12px; font-weight: 700; white-space: nowrap; }
       .repo-link {
@@ -145,7 +144,7 @@
       .store-button:disabled { opacity: .78; }
       .store-button:disabled:hover { background: #171e27; border-color: #ffffff20; transform: none; box-shadow: none; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
-      .brand-note { margin: 18px 0 0; color: #82909f; font-size: 11px; line-height: 1.55; }
+      .brand-note { max-width: none; margin: 18px 0 0; color: #82909f; font-size: 11px; line-height: 1.55; }
       footer { margin-top: 26px; color: #929eac; font-size: 12px; letter-spacing: .015em; }
       @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       @media (max-width: 480px) {
@@ -164,7 +163,6 @@
     <main>
       <div class="mark" aria-hidden="true">CR</div>
       <h1>SomToday<br />Pack Opening</h1>
-      <p>Een korte pack opening voor je SOMtoday-cijfers.</p>
       <a class="repo-link download-link" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip">
         <span class="link-end">
           <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
@@ -173,7 +171,6 @@
         <span class="download-version" aria-label="Versie v__EXTENSION_VERSION__">v__EXTENSION_VERSION__</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
-      <div class="download-note">Bestand: <span id="download-filename">CijferReveal.zip</span> · versie v__EXTENSION_VERSION__ · Je downloadt direct via deze site; GitHub Releases openen is niet nodig.</div>
       <button class="repo-link store-button" type="button" disabled aria-disabled="true">
         <img src="assets/chrome.webp" width="24" height="24" alt="" aria-hidden="true" />
         <span>Chrome Web Store — Binnenkort</span>
@@ -193,7 +190,7 @@
         <span>Hulp en veelgestelde vragen</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
-      <p class="brand-note">Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is niet verbonden aan Mozilla.</p>
+      <p class="brand-note">Chrome is een merk van Google. Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is onafhankelijk.</p>
     </main>
   </body>
 </html>

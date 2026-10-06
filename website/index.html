@@ -175,6 +175,9 @@
       .faq-dialog details[open] summary::after { transform: rotate(225deg); }
       .faq-dialog p { max-width: none; margin: 0 0 4px; font-size: 14px; line-height: 1.75; }
       footer { margin-top: 26px; color: #929eac; font-size: 12px; letter-spacing: .015em; }
+      .privacy-footer { margin-top: 12px; }
+      .privacy-link { color: var(--blue); text-underline-offset: 3px; }
+      .privacy-link:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
       @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       @media (max-width: 480px) {
         body { padding: 18px; }
@@ -220,6 +223,7 @@
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
       <p class="brand-note">Chrome is een merk van Google. Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is onafhankelijk.</p>
+      <footer class="privacy-footer"><a class="privacy-link" href="privacy.html">Privacy</a></footer>
     </main>
     <dialog class="faq-dialog" id="faq-dialog" aria-labelledby="faq-title">
       <div class="faq-heading">

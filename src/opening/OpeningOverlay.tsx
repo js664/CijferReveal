@@ -7,12 +7,12 @@ import {ResultReveal} from './ResultReveal';
 import {OpeningCard} from './OpeningCard';
 import {OpeningAudio} from './audio';
 import {REDUCED_STOP_MS} from './choreography';
-export interface OpeningProps {result:DisplayResult;settings:Settings;audio:OpeningAudio;commit:(r:DisplayResult)=>Promise<void>;close:()=>void;next?:()=>void;position:number;total:number;}
+export interface OpeningProps {result:DisplayResult;settings:Settings;audio:OpeningAudio;commit:(r:DisplayResult)=>Promise<void>;cancel?:(r:DisplayResult)=>Promise<void>;replay?:boolean;close:()=>void;next?:()=>void;position:number;total:number;}
 type Phase='preview'|'starting'|'mystery'|'stopped'|'result'|'error';
-export function OpeningOverlay({result,settings,audio,commit,close,next,position,total}:OpeningProps){
+export function OpeningOverlay({result,settings,audio,commit,cancel=async()=>{},replay=false,close,next,position,total}:OpeningProps){
  const reduced=settings.motion==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches;
  const [clock,setClock]=useState<(()=>number)|null>(null),[phase,setPhase]=useState<Phase>('preview');
- const ref=useRef<HTMLDivElement>(null),timer=useRef<ReturnType<typeof setTimeout>|null>(null),alive=useRef(true),starting=useRef(false);
+ const ref=useRef<HTMLDivElement>(null),timer=useRef<ReturnType<typeof setTimeout>|null>(null),alive=useRef(true),starting=useRef(false),committed=useRef(false),cancelRequested=useRef(false),rolledBack=useRef(false);
  const stopped=useCallback(()=>{if(!alive.current)return;audio.reveal(result.grade,settings);setPhase('result');},[audio,result.grade,settings]);
  const start=useCallback(async()=>{
   if(starting.current)return;starting.current=true;setPhase('starting');
@@ -20,7 +20,7 @@ export function OpeningOverlay({result,settings,audio,commit,close,next,position
   const unlocked=audio.unlock();
   try{
    // Opening authorizes the visible grade cards. Persist before mounting the real target.
-   await commit(result);await unlocked;if(!alive.current)return;
+   if(!replay){await commit(result);committed.current=true;}await unlocked;if(!alive.current){if(cancelRequested.current&&committed.current&&!replay&&!rolledBack.current){rolledBack.current=true;await cancel(result).catch(()=>{});}return;}
    const audioClock=await audio.start(settings);if(!alive.current){audio.stop();return;}
    setPhase('mystery');
    const beginning=performance.now();let pausedAt:number|null=document.hidden?beginning:null,pausedDuration=0;
@@ -33,8 +33,9 @@ export function OpeningOverlay({result,settings,audio,commit,close,next,position
    if(document.hidden)audio.pause();
    if(reduced)timer.current=setTimeout(stopped,REDUCED_STOP_MS);else setClock(()=>audioClock??visualClock);
   }catch{if(alive.current){starting.current=false;setPhase('error');}}
- },[audio,commit,result,settings,reduced,stopped]);
+ },[audio,commit,cancel,replay,result,settings,reduced,stopped]);
  const visibilityHandler=useRef<(()=>void)|null>(null);
+ const cancelOpening=useCallback(async()=>{cancelRequested.current=true;audio.stop();if(timer.current)clearTimeout(timer.current);if(committed.current&&!replay&&!rolledBack.current){rolledBack.current=true;await cancel(result).catch(()=>{});}close();},[audio,cancel,close,replay,result]);
  useEffect(()=>{alive.current=true;ref.current?.focus();return()=>{alive.current=false;if(timer.current)clearTimeout(timer.current);if(visibilityHandler.current)document.removeEventListener('visibilitychange',visibilityHandler.current);audio.stop();};},[audio]);
  useEffect(()=>{if(phase==='result'||phase==='error')ref.current?.focus();},[phase]);
  const onKey=(e:React.KeyboardEvent)=>{
@@ -42,7 +43,7 @@ export function OpeningOverlay({result,settings,audio,commit,close,next,position
    if(phase==='preview'){e.preventDefault();void start();}
    else if(phase==='result'&&!(e.target instanceof HTMLButtonElement)){e.preventDefault();(next??close)();}
   }
-  if(e.key==='Escape'){e.preventDefault();if(['preview','error','result'].includes(phase))close();}
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();if(['starting','mystery','stopped'].includes(phase))void cancelOpening();else if(['preview','error','result'].includes(phase))close();}
   if(e.key==='Tab'){
    const buttons=[...ref.current?.querySelectorAll<HTMLButtonElement>('button')??[]].filter(button=>!button.disabled);
    if(!buttons.length){e.preventDefault();return;}

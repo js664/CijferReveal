@@ -16,6 +16,12 @@ it('only a top-level SOMtoday content script can observe and open results',()=>{
   expect(authorizeCommand(message(open),sender,id)).toBeNull();expect(authorizeCommand(message(observation),sender,id)).toBeNull();
  }
 });
+it('only a top-level SOMtoday content script can cancel a just-started opening',()=>{
+ const cancel={kind:'cancel-open',key,scope,version,generation:0};
+ expect(authorizeCommand(message(cancel),content,id)).toEqual(cancel);
+ expect(authorizeCommand(message(cancel),popup,id)).toBeNull();
+ expect(authorizeCommand(message({...cancel,generation:-1}),content,id)).toBeNull();
+});
 it('storage reads reject other extension pages and unexpected senders',()=>{
  expect(authorizeCommand(message({kind:'read'}),popup,id)).toEqual({kind:'read'});
  for(const sender of [{...popup,url:`chrome-extension://${id}/tester.html`},{...popup,url:`chrome-extension://other/popup.html`},{url:popup.url},{...content,tab:undefined}])expect(authorizeCommand(message({kind:'read'}),sender,id)).toBeNull();

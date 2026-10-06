@@ -7,7 +7,9 @@ import {TARGET_INDEX,TICK_SECONDS} from './choreography';
 
 const ITEM_COUNT=TARGET_INDEX+10;
 const INITIAL_INDEX=TARGET_INDEX-TICK_SECONDS.length;
-const GRADES=['5,4','6,2','7,1','8,3','6,8','9,2','7,7','5,9','8,6','6,5','9,4','7,3'];
+// The surrounding cards are visual possibilities only. The target card below
+// always uses `result`, so the reel never chooses or changes the real grade.
+const GRADES=Array.from({length:80},(_,index)=>`${2+Math.floor(index/10)},${index%10}`);
 
 export function MysteryReel({clock,stopped,result}:{clock:()=>number;stopped:()=>void;result:string}){
  const [visible,setVisible]=useState(()=>new Set<number>()),containerRef=useRef<HTMLDivElement>(null),stripRef=useRef<HTMLDivElement>(null);

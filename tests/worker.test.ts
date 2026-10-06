@@ -1,6 +1,6 @@
 import {it,expect,vi,beforeEach,afterEach} from 'vitest';
 import {newState,type State} from '../src/state/schema';
-import {classify,markOpened} from '../src/state/classifier';
+import {classify,markOpened,cancelOpened} from '../src/state/classifier';
 import {LIVE_PROFILE} from '../src/somtoday/validation-profile';
 import {record,key,scope,version} from './fixtures';
 const id='a'.repeat(32),popup={id,url:`chrome-extension://${id}/popup.html`},content={id,url:'https://leerling.somtoday.nl/cijfers',frameId:0,tab:{id:1} as chrome.tabs.Tab};
@@ -22,6 +22,12 @@ it('the worker preserves observed identities on reset and rejects an opening sta
  expect((await worker.send({kind:'open',key,scope,version,generation:0},content))?.ok).toBe(false);
  expect((await worker.send({kind:'read'}))?.state?.collection).toEqual([]);
  expect((await worker.send({kind:'open',key,scope,version,generation:1},content))?.state?.collection).toHaveLength(1);
+});
+it('cancelling a first opening restores it to pending and removes its collection entry',()=>{
+ const state=newState();classify(state,{record:record(),key,scope,version},LIVE_PROFILE);markOpened(state,key,version,scope);
+ expect(state.collection).toHaveLength(1);cancelOpened(state,key,version,scope);
+ expect(state.records[key]).toMatchObject({state:'pending',version});expect(state.collection).toEqual([]);
+ expect(()=>cancelOpened(state,key,version,scope)).toThrow();
 });
 it('reset can recover malformed storage and subsequent new grades are detected normally',async()=>{
  const worker=await harness({schema:99});expect((await worker.send({kind:'read'}))?.ok).toBe(false);

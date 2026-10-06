@@ -1,11 +1,12 @@
 {
   "name": "pack-opening-voor-somtoday",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "node scripts/build.mjs",
+    "build:snapshot": "node scripts/build.mjs --snapshot",
     "build:dev": "node scripts/build.mjs --dev",
     "build:developer": "node scripts/build.mjs --developer",
     "typecheck": "tsc --noEmit",

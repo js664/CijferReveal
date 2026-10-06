@@ -32,8 +32,8 @@ function maskNativeValues(owner:HTMLElement,blocked:boolean){
  }
  nativeSnapshots.set(owner,snapshot);
 }
-function Actions({pending,unresolved,display,onOpen,onRetry}:{pending:boolean;unresolved:boolean;display:DisplayResult|undefined;onOpen:(result:DisplayResult,origin:HTMLElement)=>void;onRetry?:()=>void}){
- return <>{pending&&display&&<div className="po-card-cover"><motion.div initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} transition={{duration:.22}}><strong>NIEUW CIJFER</strong><br/><button className="po-open" onClick={e=>{e.stopPropagation();onOpen(display,e.currentTarget);}}>Open cijfer</button></motion.div></div>}{unresolved&&<div className="po-card-cover po-unresolved"><span>Cijfer nog niet gekoppeld</span>{onRetry&&<button className="po-open" onClick={e=>{e.stopPropagation();onRetry();}}>Pagina opnieuw laden</button>}</div>}</>;
+function Actions({pending,opened,unresolved,display,onOpen,onRetry}:{pending:boolean;opened:boolean;unresolved:boolean;display:DisplayResult|undefined;onOpen:(result:DisplayResult,origin:HTMLElement)=>void;onRetry?:()=>void}){
+ return <>{pending&&display&&<div className="po-card-cover"><motion.div initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} transition={{duration:.22}}><strong>NIEUW CIJFER</strong><br/><button className="po-open" onClick={e=>{e.stopPropagation();onOpen(display,e.currentTarget);}}>Open cijfer</button></motion.div></div>}{opened&&display&&<button className="po-replay" type="button" aria-label="Cijfer opnieuw openen" title="Opnieuw openen" onClick={e=>{e.stopPropagation();onOpen(display,e.currentTarget);}}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 1-2-4.95L20 12"/></svg></button>}{unresolved&&<div className="po-card-cover po-unresolved"><span>Cijfer nog niet gekoppeld</span>{onRetry&&<button className="po-open" onClick={e=>{e.stopPropagation();onRetry();}}>Pagina opnieuw laden</button>}</div>}</>;
 }
 export function presentCard(owner:HTMLElement,result:ResultRecord|null,status:Lifecycle|undefined,display:DisplayResult|undefined,onOpen:(result:DisplayResult,origin:HTMLElement)=>void,onRetry?:()=>void):Presentation{
  const host=document.createElement('div');host.className='po-safe-native';host.style.width='100%';if(display)host.dataset.poKey=display.key;
@@ -46,6 +46,7 @@ export function presentCard(owner:HTMLElement,result:ResultRecord|null,status:Li
  const update=(nextResult:ResultRecord|null,nextStatus:Lifecycle|undefined,nextDisplay:DisplayResult|undefined,nextOpen:typeof onOpen,nextRetry=onRetry)=>{
  if(disposed)return;
  const pending=nextStatus==='pending'&&!!nextDisplay;
+ const opened=nextStatus==='opened'&&!!nextDisplay;
  const unresolved=!nextResult||nextStatus==='unresolved'||!nextStatus;
  const safeGrade=!!nextResult&&(nextStatus==='baseline'||nextStatus==='opened'||nextStatus==='observed-nonnumeric');
  const blocked=!safeGrade;
@@ -55,7 +56,7 @@ export function presentCard(owner:HTMLElement,result:ResultRecord|null,status:Li
  if(blocked)owner.setAttribute('aria-hidden','true');else owner.removeAttribute('aria-hidden');
  maskNativeValues(owner,blocked);
  for(const [node,attrs] of snapshots){if(blocked){for(const attr of ['aria-label','title','aria-describedby','aria-labelledby'])node.removeAttribute(attr);}else{for(const [attr,value] of attrs){if(value===null)node.removeAttribute(attr);else node.setAttribute(attr,value);}}}
- root.render(<Actions pending={pending} unresolved={unresolved} display={nextDisplay??undefined} onOpen={nextOpen} onRetry={nextRetry}/>);
+ root.render(<Actions pending={pending} opened={opened} unresolved={unresolved} display={nextDisplay??undefined} onOpen={nextOpen} onRetry={nextRetry}/>);
  };
  const resetTilt=()=>{host.classList.remove('po-is-tilting','po-is-hover');host.style.setProperty('--po-tilt-rx','0deg');host.style.setProperty('--po-tilt-ry','0deg');};
  host.addEventListener('pointermove',event=>{if(event.pointerType==='touch'||!owner.querySelector('.root'))return;const rect=host.getBoundingClientRect();if(!rect.width||!rect.height)return;const x=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));host.style.setProperty('--po-tilt-rx',`${(0.5-y)*8}deg`);host.style.setProperty('--po-tilt-ry',`${(x-0.5)*8}deg`);host.style.setProperty('--po-tilt-gx',`${x*100}%`);host.style.setProperty('--po-tilt-gy',`${y*100}%`);host.classList.add('po-is-tilting','po-is-hover');});

@@ -29,6 +29,15 @@ export function markOpened(state:State,key:string,version:string,scope:string,no
  r.state='opened';state.collection.push({...r.display,scope,openedAt:now});
  for(const alias of Object.values(state.aliases))if(alias.scope===scope&&alias.logicalKey===key)alias.openedSignature=alias.signature;
 }
+/** Undo only the just-started first opening when its animation is cancelled. */
+export function cancelOpened(state:State,key:string,version:string,scope:string,generation=state.resetGeneration){
+ const r=state.records[key];
+ if(generation!==state.resetGeneration||!r||r.scope!==scope||r.state!=='opened'||r.version!==version||!r.display)throw new Error('Deze opening kan niet worden teruggedraaid.');
+ const entry=state.collection.findIndex(item=>item.scope===scope&&item.key===key&&item.version===version);
+ if(entry<0)throw new Error('De geopende kaart is niet gevonden.');
+ state.collection.splice(entry,1);r.state='pending';
+ for(const alias of Object.values(state.aliases))if(alias.scope===scope&&alias.logicalKey===key&&alias.openedSignature===alias.signature)delete alias.openedSignature;
+}
 export function resetOpenedResults(state:State){
  // Keep identities and observations so already loaded pages can reopen packs
  // immediately. A fresh salt would discard those mappings until a new GET.

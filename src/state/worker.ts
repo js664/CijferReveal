@@ -1,6 +1,6 @@
 import {migrate} from './migrations';
 import {newState} from './schema';
-import {noteCoverage,markOpened,resetOpenedResults} from './classifier';
+import {noteCoverage,markOpened,cancelOpened,resetOpenedResults} from './classifier';
 import {observeLogicalResults} from './logical-results';
 import {LIVE_PROFILE} from '../somtoday/validation-profile';
 import {authorizeCommand} from './commands';
@@ -42,6 +42,7 @@ chrome.runtime.onMessage.addListener((message,sender,reply)=>{
     await observeLogicalResults(state,c.inputs);
     if(c.scope)noteCoverage(state,c.scope,c.surface,LIVE_PROFILE);break;
    case 'open':markOpened(state,c.key,c.version,c.scope,undefined,c.generation);break;
+   case 'cancel-open':cancelOpened(state,c.key,c.version,c.scope,c.generation);break;
    case 'settings':state.settings=c.settings;break;
    case 'clear-collection':state.collection=[];break;
    case 'reset':resetOpenedResults(state);break;

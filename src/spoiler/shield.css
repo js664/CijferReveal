@@ -23,6 +23,11 @@ sl-cijfers .po-unsupported-owner.po-unsupported-owner {display:none!important;}
 .po-safe-native .po-native-effects {position:absolute;z-index:4;inset:0;pointer-events:none;}
 .po-safe-native .po-native-effects::before {content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle 110px at var(--po-tilt-gx,50%) var(--po-tilt-gy,50%),#fff8,#fff1 48%,transparent 82%);opacity:0;mix-blend-mode:screen;transition:opacity 180ms ease;}
 .po-safe-native .po-native-effects .po-open {pointer-events:auto;}
+.po-safe-native .po-native-effects .po-replay {position:absolute;top:10px;right:10px;display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid #cbd9e333;border-radius:50%;background:#111923d9;color:#dce7f2;opacity:0;pointer-events:auto;transform:translateY(-3px) scale(.94);transition:opacity 180ms ease,transform 180ms ease,border-color 180ms ease,background-color 180ms ease;cursor:pointer;}
+.po-safe-native.po-is-hover .po-native-effects .po-replay,.po-safe-native:focus-within .po-native-effects .po-replay {opacity:1;transform:none;}
+.po-safe-native .po-native-effects .po-replay:hover {border-color:#d7e5f17a;background:#253140;color:#fff;}
+.po-safe-native .po-native-effects .po-replay svg {width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.po-safe-native .po-native-effects .po-replay:focus-visible {opacity:1;outline:2px solid #86b9f2;outline-offset:2px;}
 .po-safe-native.po-is-hover .po-native-effects::before {opacity:.22;}
 .po-safe-native.po-is-tilting > .po-preserved-owner {transition-duration:80ms;}
 .po-safe-native.po-pending.po-is-hover::before,.po-safe-native.po-pending:focus-within::before {opacity:.82;}

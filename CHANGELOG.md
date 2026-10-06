@@ -1,5 +1,12 @@
 # Wat is er veranderd?
 
+## Versie 0.2.5
+
+- De cijferrol toont nu meer mogelijke cijfers, van 2,0 tot 9,9. De rol stopt nog steeds op het echte cijfer.
+- Je kunt een geopend cijfer opnieuw openen met de ronde pijl op de kaart.
+- Druk op Escape tijdens het draaien om te stoppen. Een nieuwe opening wordt dan teruggezet.
+- De inventarisfilters reageren direct en vullen het beschikbare scherm.
+
 ## Versie 0.2.4 — 5 oktober 2026
 
 - Letter- en Unicodecijfers openen ook op vakpagina's.

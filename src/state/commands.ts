@@ -18,9 +18,9 @@ export function authorizeCommand(message:unknown,sender:chrome.runtime.MessageSe
    const s=c.settings;if(!popup||!object(s)||typeof s.sound!=='boolean'||typeof s.volume!=='number'||!Number.isFinite(s.volume)||s.volume<0||s.volume>1||(s.motion!=='system'&&s.motion!=='reduce'))return null;
    return {kind:'settings',settings:{sound:s.sound,volume:s.volume,motion:s.motion}};
   }
-  case 'open':{
+  case 'open':case 'cancel-open':{
    if(!content||!hash(c.key)||!hash(c.version)||!hash(c.scope)||typeof c.generation!=='number'||!Number.isSafeInteger(c.generation)||c.generation<0)return null;
-   return {kind:'open',key:c.key,scope:c.scope,version:c.version,generation:c.generation};
+   return {kind:c.kind,key:c.key,scope:c.scope,version:c.version,generation:c.generation};
   }
   case 'observe':{
    if(!content||!Array.isArray(c.inputs)||c.inputs.length>2000||(c.scope!==null&&!hash(c.scope)))return null;

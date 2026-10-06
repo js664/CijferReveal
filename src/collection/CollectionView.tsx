@@ -21,7 +21,7 @@ function InventoryDropdown({label,value,options,open,onToggle,onClose,onChange}:
   if((event.key==='ArrowDown'||event.key==='ArrowUp')&&event.target===trigger.current){event.preventDefault();if(!open)onToggle();focusOption(activeIndex);return;}
   if(open&&(event.key==='ArrowDown'||event.key==='ArrowUp')&&event.target instanceof HTMLElement&&event.target.matches('[role="option"]')){event.preventDefault();const optionsEls=[...root.current!.querySelectorAll<HTMLButtonElement>('[role="option"]')],at=optionsEls.indexOf(event.target as HTMLButtonElement),step=event.key==='ArrowDown'?1:-1;optionsEls[(at+step+optionsEls.length)%optionsEls.length]?.focus();}
  };
- return <div ref={root} className="po-inventory-dropdown" onKeyDown={onKeyDown} onBlur={event=>{if(open&&!event.currentTarget.contains(event.relatedTarget as Node|null))onClose();}}>
+ return <div ref={root} className="po-inventory-dropdown" onKeyDown={onKeyDown} onBlur={event=>{if(!open)return;const current=event.currentTarget;requestAnimationFrame(()=>{const tree=current.getRootNode(),focused=tree instanceof ShadowRoot?tree.activeElement:document.activeElement;if(!current.contains(focused))onClose();});}}>
   <span className="po-inventory-dropdown-label">{label}</span>
   <button ref={trigger} type="button" className="po-inventory-select" aria-label={label} aria-haspopup="listbox" aria-expanded={open} aria-controls={listId} onClick={onToggle}>
    <span>{options.find(option=>option.value===value)?.label??options[0]?.label}</span><svg className={open?'is-open':''} viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg>

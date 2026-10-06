@@ -66,11 +66,19 @@ test('fresh install masks a numeric grade but offers its matching pack; SPA/remo
  }finally{await f.dispose();}
 });
 test('latest stable GitHub API release shows a Dutch update notice with the API release link',async()=>{
- const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.5',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.5',draft:false,prerelease:false});
- try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.5');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.6',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.6',draft:false,prerelease:false});
+ try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.6');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
 });
 test('retry reloads SOMtoday so a transient grade-card mismatch can be observed again',async()=>{
  const f=await launch();try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await f.page.evaluate(()=>{document.querySelector('sl-laatste-resultaat-item .subtitel').textContent='4 okt · Nog niet geladen';});await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toBeVisible();const navigation=f.page.waitForNavigation();await f.page.getByRole('button',{name:'Pagina opnieuw laden'}).click();await navigation;await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();}finally{await f.dispose();}
+});
+test('Escape refunds an unfinished first opening and opened cards replay without duplicate inventory',async()=>{
+ const f=await launch();try{
+  await f.page.emulateMedia({reducedMotion:'reduce'});const cdp=await f.context.newCDPSession(f.page),readAX=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(n=>!n.ignored).map(n=>n.name?.value??'').join('\n'),readState=async()=>f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState),recordState=async()=>Object.values((await readState()).records).find(r=>r.display?.description==='Hoofdstuk 3')?.state;await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();await clickAXButton(cdp,'Open Cijfer');await expect.poll(async()=> await recordState()).toBe('opened');await f.page.waitForTimeout(120);await f.page.keyboard.press('Escape');await expect.poll(async()=> await recordState()).toBe('pending');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
+  let saved=await readState();expect(saved.collection).toHaveLength(0);
+  await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();await clickAXButton(cdp,'Open Cijfer');await expect.poll(readAX,{timeout:5000}).toContain('Cijfer 8,3');saved=await readState();expect(saved.collection).toHaveLength(1);await clickAXButton(cdp,'Terug naar SOMtoday');
+  await f.page.locator('.po-safe-native').hover();const replay=f.page.getByRole('button',{name:'Cijfer opnieuw openen'});await expect(replay).toBeVisible();await replay.click();await clickAXButton(cdp,'Open Cijfer');await expect.poll(readAX,{timeout:5000}).toContain('Cijfer 8,3');saved=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState);expect(Object.values(saved.records).find(r=>r.display?.description==='Hoofdstuk 3')?.state).toBe('opened');expect(saved.collection).toHaveLength(1);
+ }finally{await f.dispose();}
 });
 test('returning from vakgemiddelden keeps grade matches and subject pages free of repeated warnings',async()=>{
  const f=await launch();try{
@@ -107,7 +115,7 @@ test('fresh install can open a uniquely matched numeric result and saves the rea
 test('fresh install can match and open a SOMtoday letter grade',async()=>{
  const student='letter-grade-student',letter={...raw,formattedResultaat:'O',isCijfer:false,isLabel:true};
  const letterCard=card.replaceAll('8,3','O');
- const f=await launch(false,'dist',false,{student,raw:letter,card:letterCard});
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:letter,card:letterCard});
  try{
   await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
   await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();
@@ -124,7 +132,7 @@ test('letter grades are matchable on subject pages reached from the grade averag
  const student='subject-letter-student',letter={...raw,formattedResultaat:'V',isCijfer:false,isLabel:true};
  const subjectCard=card.replace('sl-laatste-resultaat-item','sl-vakresultaat-item').replace('<div class="titel">Wiskunde A</div>','<div class="titel">Hoofdstuk 3</div>').replace('4 okt · Hoofdstuk 3','4 okt').replaceAll('8,3','V');
  const endpoint=`/rest/v1/geldendvoortgangsdossierresultaten/vakresultaten/${student}/vak/fixture-subject/lichting/fixture-cohort`;
- const f=await launch(false,'dist',false,{student,raw:letter,card:subjectCard,subject:true,endpoint});try{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:letter,card:subjectCard,subject:true,endpoint});try{
   await f.page.evaluate(()=>history.replaceState({},'','/cijfers/vakresultaten?vak=subject&lichting=cohort&plaatsing=placement&vaknaam=bedrijfseconomie'));
   await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
   await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');await expect.poll(async()=> (await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState)).collection.length,{timeout:12000}).toBe(1);
@@ -136,7 +144,7 @@ test('another learner on a fresh install can open a subject exam grade with diff
  const type='resultaten.RGeldendExamendossierResultaat',student='another-fixture-student';
  const different={...raw,$type:type,links:[{rel:'self',id:9876543210123,type}],formattedResultaat:'6.75',omschrijving:'',weging:1,datumInvoerEerstePoging:'2026-09-29T10:00:00+02:00',additionalObjects:{vaknaam:'Engels',vakuuid:'other-fixture-subject',resultaatkolom:{type:'school-specific-column'}}};
  const otherCard=card.replaceAll('sl-laatste-resultaat-item','sl-vakresultaat-item').replaceAll('Wiskunde A','Engels').replaceAll('8,3','6,75').replaceAll('4 okt · Hoofdstuk 3','29 sep.').replaceAll('2x','1,0 ×');
- const f=await launch(false,'dist',false,{student,raw:different,card:otherCard,subject:true,exam:true});
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:different,card:otherCard,subject:true,exam:true});
  try{
   await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.cijfer')).toHaveText('?');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
   await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');
@@ -163,7 +171,7 @@ test('a numeric grade arriving after installation receives its own open button a
 });
 
 test('an opened star becoming a numeric grade can be opened again without resetting local data',async()=>{
- const f=await launch(true,'dist',true);try{
+ const f=await launch(true,process.env.PO_TEST_BUILD??'dist',true);try{
   await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(2);await f.page.locator('.po-safe-native').first().hover();await f.page.getByRole('button',{name:'Open cijfer'}).first().click();
   const cdp=await f.context.newCDPSession(f.page),readAX=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(n=>!n.ignored).map(n=>n.name?.value??'').join('\n');
   await clickAXButton(cdp,'Open Cijfer');await expect.poll(readAX).toContain('Cijfer *');await clickAXButton(cdp,'Terug naar SOMtoday');
@@ -176,11 +184,11 @@ test('an opened star becoming a numeric grade can be opened again without resett
  }finally{await f.dispose();}
 });
 test('desktop and mobile fixture visuals, full reel and reduced motion',async({page})=>{
- await mkdir('.impeccable/review',{recursive:true});await page.goto('http://127.0.0.1:5173/tester.html');await page.getByRole('button',{name:'Test opening',exact:true}).click();await expect(page.locator('.po-preview')).toBeVisible();await expect(page.locator('.po-preview')).not.toContainText('8,9');await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await expect(page.locator('.po-preview')).toHaveCSS('opacity','1');const previewTilt=page.locator('.po-preview .po-tilt');const previewBox=await previewTilt.boundingBox();await page.mouse.move(previewBox.x+previewBox.width*.75,previewBox.y+previewBox.height*.25);await expect(previewTilt).toHaveClass(/po-is-hover/);await page.screenshot({path:'.impeccable/review/desktop-preview.png'});await page.keyboard.press('Enter');await expect(page.locator('.po-lane')).toBeVisible();await expect(page.locator('.po-track [data-beam]')).toHaveCount(44);await expect(page.locator('.po-mystery-grade').first()).toContainText(/\d/);await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await page.waitForTimeout(850);await expect.poll(()=>page.locator('[data-beam][data-active]').count()).toBeGreaterThan(0);const reelBox=await page.locator('.po-lane').boundingBox();expect(reelBox.height).toBeGreaterThan(330);await page.screenshot({path:'.impeccable/review/desktop-reel.png'});await expect(page.locator('.po-grade')).toHaveText('8,9',{timeout:10000});await expect(page.locator('.po-result')).toHaveCSS('opacity','1');const tilt=page.locator('.po-tilt');const box=await tilt.boundingBox();await page.mouse.move(box.x+box.width*.8,box.y+box.height*.2);await expect(tilt).toHaveClass(/po-is-hover/);await page.waitForTimeout(450);await page.screenshot({path:'.impeccable/review/desktop.png'});await page.getByRole('button',{name:'Terug naar SOMtoday'}).click();await page.setViewportSize({width:390,height:844});await page.getByLabel('Verminder beweging').check();await page.getByRole('button',{name:'Test opening',exact:true}).click();await expect(page.getByRole('button',{name:'Open Cijfer',exact:true})).toBeVisible();await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await expect(page.locator('.po-preview')).toHaveCSS('opacity','1');await page.screenshot({path:'.impeccable/review/mobile-preview.png'});await page.keyboard.press('Enter');await expect(page.locator('.po-grade')).toHaveText('8,9');await expect(page.locator('.po-result')).toHaveCSS('opacity','1');await page.screenshot({path:'.impeccable/review/mobile.png'});await expect(page.locator('.po-lane')).toHaveCount(0);
+ await mkdir('.impeccable/review',{recursive:true});await page.goto('http://127.0.0.1:5174/tester.html');await page.getByRole('button',{name:'Test opening',exact:true}).click();await expect(page.locator('.po-preview')).toBeVisible();await expect(page.locator('.po-preview')).not.toContainText('8,9');await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await expect(page.locator('.po-preview')).toHaveCSS('opacity','1');const previewTilt=page.locator('.po-preview .po-tilt');const previewBox=await previewTilt.boundingBox();await page.mouse.move(previewBox.x+previewBox.width*.75,previewBox.y+previewBox.height*.25);await expect(previewTilt).toHaveClass(/po-is-hover/);await page.screenshot({path:'.impeccable/review/desktop-preview.png'});await page.keyboard.press('Enter');await expect(page.locator('.po-lane')).toBeVisible();await expect(page.locator('.po-track [data-beam]')).toHaveCount(44);await expect(page.locator('.po-mystery-grade').first()).toContainText(/\d/);await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await page.waitForTimeout(850);await expect.poll(()=>page.locator('[data-beam][data-active]').count()).toBeGreaterThan(0);const reelBox=await page.locator('.po-lane').boundingBox();expect(reelBox.height).toBeGreaterThan(330);const reelGrades=await page.locator('.po-mystery-grade').allTextContents();expect(reelGrades.some(grade=>grade.startsWith('2,'))).toBe(true);expect(reelGrades.some(grade=>grade.startsWith('9,'))).toBe(true);await expect(page.locator('[data-target-folio="true"] .po-mystery-grade')).toHaveText('8,9');await page.screenshot({path:'.impeccable/review/desktop-reel.png'});await expect(page.locator('.po-grade')).toHaveText('8,9',{timeout:10000});await expect(page.locator('.po-result')).toHaveCSS('opacity','1');const tilt=page.locator('.po-tilt');const box=await tilt.boundingBox();await page.mouse.move(box.x+box.width*.8,box.y+box.height*.2);await expect(tilt).toHaveClass(/po-is-hover/);await page.waitForTimeout(450);await page.screenshot({path:'.impeccable/review/desktop.png'});await page.getByRole('button',{name:'Terug naar SOMtoday'}).click();await page.setViewportSize({width:390,height:844});await page.getByLabel('Verminder beweging').check();await page.getByRole('button',{name:'Test opening',exact:true}).click();await expect(page.getByRole('button',{name:'Open Cijfer',exact:true})).toBeVisible();await expect(page.locator('.po-opening-overlay')).toHaveCSS('opacity','1');await expect(page.locator('.po-preview')).toHaveCSS('opacity','1');await page.screenshot({path:'.impeccable/review/mobile-preview.png'});await page.keyboard.press('Enter');await expect(page.locator('.po-grade')).toHaveText('8,9');await expect(page.locator('.po-result')).toHaveCSS('opacity','1');await page.screenshot({path:'.impeccable/review/mobile.png'});await expect(page.locator('.po-lane')).toHaveCount(0);
 });
 
 test('star is visible on its real reel card and lands at center without a second reveal',async({page})=>{
- await page.goto('http://127.0.0.1:5173/tester.html');await page.getByLabel('Cijfer').selectOption('*');await page.getByRole('button',{name:'Test opening',exact:true}).click();await page.getByRole('button',{name:'Open Cijfer',exact:true}).click();const lane=page.locator('.po-lane');await expect(lane).toBeVisible();await expect(page.locator('[data-target-folio="true"] .po-mystery-grade')).toHaveText('*');await expect(lane.locator('.po-mystery-grade').first()).toContainText(/\d/);await expect(page.locator('.po-grade')).toHaveCount(0);await captureLanding(page);await expect(page.locator('.po-grade')).toHaveText('*',{timeout:9000});const offset=await page.evaluate(()=>window.fixtureLandingOffset);expect(offset).toBeLessThan(1);await expect(page.locator('.po-grade')).toHaveText('*',{timeout:5000});await expect(page.locator('.po-grade')).toHaveAttribute('aria-label','Cijfer *');await expect(page.locator('.po-grade .po-digit-strip')).toHaveCount(0);
+ await page.goto('http://127.0.0.1:5174/tester.html');await page.getByLabel('Cijfer').selectOption('*');await page.getByRole('button',{name:'Test opening',exact:true}).click();await page.getByRole('button',{name:'Open Cijfer',exact:true}).click();const lane=page.locator('.po-lane');await expect(lane).toBeVisible();await expect(page.locator('[data-target-folio="true"] .po-mystery-grade')).toHaveText('*');await expect(lane.locator('.po-mystery-grade').first()).toContainText(/\d/);await expect(page.locator('.po-grade')).toHaveCount(0);await captureLanding(page);await expect(page.locator('.po-grade')).toHaveText('*',{timeout:9000});const offset=await page.evaluate(()=>window.fixtureLandingOffset);expect(offset).toBeLessThan(1);await expect(page.locator('.po-grade')).toHaveText('*',{timeout:5000});await expect(page.locator('.po-grade')).toHaveAttribute('aria-label','Cijfer *');await expect(page.locator('.po-grade .po-digit-strip')).toHaveCount(0);
 });
 
 test('inventory is a native tab, protects only its route content, filters opened grades and survives browser history',async()=>{
@@ -191,13 +199,18 @@ test('inventory is a native tab, protects only its route content, filters opened
  // Exercise a shell with the native header and tabs nested in the route,
  // which the former whole-route display:none strategy hid entirely.
  await expect(f.page.locator('sl-cijfers')).toBeVisible();
- await f.page.evaluate(()=>{const route=document.querySelector('sl-cijfers'),main=document.createElement('main');main.className='fixture-content';main.style.gridArea='content';main.append(...route.children);route.append(main);route.style.display='grid';route.style.gridTemplateAreas='"header" "tabs" "content"';const bar=document.querySelector('sl-tab-bar'),header=document.querySelector('.fixture-header');bar.style.gridArea='tabs';header.style.gridArea='header';route.prepend(bar);route.prepend(header);});
+ await f.page.evaluate(()=>{const route=document.querySelector('sl-cijfers'),main=document.createElement('main');main.className='fixture-content';main.style.gridArea='content';main.style.maxWidth='720px';main.style.margin='0 auto';main.append(...route.children);route.append(main);route.style.display='grid';route.style.gridTemplateAreas='"header" "tabs" "content"';const bar=document.querySelector('sl-tab-bar'),header=document.querySelector('.fixture-header');bar.style.gridArea='tabs';header.style.gridArea='header';route.prepend(bar);route.prepend(header);});
  const button=f.page.getByRole('tab',{name:'Inventaris',exact:true});await expect(button).toBeVisible();expect(await f.page.getByRole('tab',{name:'Inventaris'}).count()).toBe(1);await button.click();
- const cdp=await f.context.newCDPSession(f.page),host=f.page.locator('.po-inventory-host');await expect(host).toBeVisible();await expect(button).toHaveAttribute('aria-selected','true');await expect(f.page.locator('sl-cijfers')).toBeVisible();await expect(f.page.locator('.fixture-content')).toBeVisible();await expect(f.page.locator('sl-laatsteresultaten')).toBeHidden();await expect(f.page.locator('.fixture-header')).toBeVisible();await expect(f.page.getByRole('tab',{name:'Rooster',exact:true})).toBeVisible();expect(await host.evaluate(n=>n.parentElement.className)).toBe('fixture-content');
+ const cdp=await f.context.newCDPSession(f.page),host=f.page.locator('.po-inventory-host');await expect(host).toBeVisible();await expect(button).toHaveAttribute('aria-selected','true');await expect(f.page.locator('sl-cijfers')).toBeVisible();await expect(f.page.locator('sl-laatsteresultaten')).toBeHidden();await expect(f.page.locator('.fixture-header')).toBeVisible();await expect(f.page.getByRole('tab',{name:'Rooster',exact:true})).toBeVisible();expect(await host.evaluate(n=>n.parentElement===document.body)).toBe(true);
+ await expect.poll(()=>host.evaluate(n=>Math.abs(n.getBoundingClientRect().bottom-innerHeight))).toBeLessThan(2);await expect.poll(()=>host.evaluate(n=>Math.abs(n.getBoundingClientRect().top-document.querySelector('sl-tab-bar').getBoundingClientRect().bottom))).toBeLessThan(2);expect(await host.evaluate(n=>Math.abs(n.getBoundingClientRect().width-innerWidth))).toBeLessThan(1);
  const view=await readInventory(cdp);expect(view).toMatchObject({title:'Inventaris',values:['8,3','*','5,8'],cardCount:3});expect(view.text).toContain('3 geopend');expect(view.text).not.toContain('Gemiddelde');expect(view.text).not.toContain('Hoogste');expect(view.text).not.toContain('9,9');expect(view.text).not.toContain('veilig bewaard');expect(await f.page.locator('sl-cijfers').getAttribute('aria-hidden')).toBeNull();
  expect(await inventoryEval(cdp,function(root){const page=root.querySelector('.po-inventory-page'),style=getComputedStyle(page);return{scheme:style.colorScheme,background:style.backgroundColor,image:style.backgroundImage};})).toMatchObject({scheme:'dark',background:'rgba(0, 0, 0, 0)'});expect(await inventoryEval(cdp,function(root){return getComputedStyle(root.querySelector('.po-inventory-page')).backgroundImage;})).toContain('radial-gradient');
+ expect(await inventoryEval(cdp,function(root){const seam=getComputedStyle(root.querySelector('.po-grade-card-shell'),'::before');return{content:seam.content,height:seam.height,opacity:seam.opacity};})).toMatchObject({content:'""',height:'1px',opacity:'0.45'});const card=await inventoryPoint(cdp,'.po-inventory-card');await f.page.mouse.move(card.x,card.y);await expect.poll(()=>inventoryEval(cdp,function(root){return getComputedStyle(root.querySelector('.po-grade-card-shell'),'::before').height;})).toBe('2px');await expect.poll(()=>inventoryEval(cdp,function(root){return getComputedStyle(root.querySelector('.po-grade-card-shell'),'::before').opacity;})).toBe('0.95');
  await clickInventory(f.page,cdp,'.po-inventory-filter-toggle');await expect.poll(()=>inventoryEval(cdp,root=>root.querySelector('.po-inventory-filter-toggle').getAttribute('aria-expanded'))).toBe('true');
- await chooseInventory(f.page,cdp,'[aria-label="Vak"]','Engels');await expect.poll(()=>readInventory(cdp)).toMatchObject({values:['5,8'],cardCount:1});
+ await clickInventory(f.page,cdp,'[aria-label="Vak"]');await expect.poll(()=>inventoryEval(cdp,root=>root.querySelector('[role="listbox"]')?.getAttribute('aria-label')??null)).toBe('Vak');
+ await inventoryEval(cdp,function(root){root.querySelector('.po-inventory-select[aria-label="Vak"]').dispatchEvent(new FocusEvent('focusout',{bubbles:true,relatedTarget:null}));});
+ await expect.poll(()=>inventoryEval(cdp,root=>root.querySelector('[role="listbox"]')?.getAttribute('aria-label')??null)).toBe('Vak');
+ const engelsOption=await inventoryPoint(cdp,'[role="option"][data-value="Engels"]');await f.page.mouse.click(engelsOption.x,engelsOption.y);await expect.poll(()=>readInventory(cdp)).toMatchObject({values:['5,8'],cardCount:1});await expect.poll(()=>inventoryEval(cdp,root=>root.querySelector('.po-inventory-select[aria-label="Vak"]').innerText)).toContain('Engels');
  await clickInventory(f.page,cdp,'[aria-label="Verwijder vakfilter Engels"]');await expect.poll(()=>readInventory(cdp)).toMatchObject({cardCount:3});
  await chooseInventoryKeyboard(f.page,cdp,'[aria-label="Cijfergroep"]','gold');await expect.poll(()=>readInventory(cdp)).toMatchObject({values:['8,3'],cardCount:1});
  await chooseInventory(f.page,cdp,'[aria-label="Cijfergroep"]','neutral');await expect.poll(()=>readInventory(cdp)).toMatchObject({values:['*'],cardCount:1});
@@ -211,7 +224,7 @@ test('inventory is a native tab, protects only its route content, filters opened
  await inventoryEval(cdp,function(root){root.querySelector('.po-inventory-card').click();});await expect.poll(()=>inventoryEval(cdp,function(root){const dialog=root.querySelector('.po-grade-detail');return{open:dialog.open,title:dialog.querySelector('h2')?.textContent?.trim(),details:dialog.innerText};})).toMatchObject({open:true,title:'8,3'});await expect.poll(()=>inventoryEval(cdp,function(root){return root.querySelector('.po-grade-detail').innerText;})).toContain('Geopend');await f.page.keyboard.press('Escape');await expect.poll(()=>inventoryEval(cdp,function(root){return root.querySelector('.po-grade-detail').open;})).toBe(false);
  await f.page.waitForTimeout(850);
  await f.page.screenshot({path:'.impeccable/review/inventory.png'});
- await f.page.setViewportSize({width:390,height:844});await expect(f.page.locator('.fixture-header')).toBeVisible();await expect(button).toBeVisible();expect(await f.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await f.page.screenshot({path:'.impeccable/review/inventory-mobile.png'});await f.page.setViewportSize({width:1280,height:720});
+ await f.page.setViewportSize({width:390,height:844});await expect(f.page.locator('.fixture-header')).toBeVisible();await expect(button).toBeVisible();expect(await f.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect.poll(()=>host.evaluate(n=>n.getBoundingClientRect().bottom-innerHeight)).toBeGreaterThanOrEqual(-2);await f.page.screenshot({path:'.impeccable/review/inventory-mobile.png'});await f.page.setViewportSize({width:1280,height:720});
  // Return the synthetic shell to its persistent fixture location before the
  // fixture replaces sl-root on history navigation (Angular keeps its real shell).
  await f.page.evaluate(()=>{document.body.prepend(document.querySelector('sl-tab-bar'));document.body.prepend(document.querySelector('.fixture-header'));});
@@ -225,9 +238,8 @@ test('inventory empty state contains no sample grades and returns to Cijfers',as
 });
 
 test('one click on Inventaris from another SOMtoday tab opens Cijfers and Inventory together',async()=>{
- const f=await launch(true);try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await f.page.getByRole('tab',{name:'Rooster',exact:true}).click();await expect(f.page.locator('sl-cijfers')).toHaveCount(0);const tab=f.page.getByRole('tab',{name:'Inventaris',exact:true});await tab.click();await expect(f.page.locator('.po-inventory-host')).toBeVisible();await expect(tab).toHaveAttribute('aria-selected','true');await expect(f.page.locator('sl-cijfers')).toBeVisible();}finally{await f.dispose();}
+ const f=await launch(true);try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await f.page.getByRole('tab',{name:'Rooster',exact:true}).click();await expect(f.page.locator('sl-cijfers')).toHaveCount(0);const tab=f.page.getByRole('tab',{name:'Inventaris',exact:true});await tab.click();await expect(f.page.locator('.po-inventory-host')).toBeVisible();await expect(tab).toHaveAttribute('aria-selected','true');await expect(f.page.locator('sl-cijfers')).toHaveCount(1);await expect(f.page.locator('sl-tab-bar')).toBeVisible();}finally{await f.dispose();}
 });
-
 test('development document-start diagnostic emits only stage/timing/component/visibility/route',async()=>{
  const f=await launch(false,'dist-dev');try{
  await expect(f.page.locator('.po-safe-native')).toBeVisible();
@@ -238,7 +250,7 @@ test('development document-start diagnostic emits only stage/timing/component/vi
 });
 
 test('two stars including a legacy observed record open, reveal stars and persist on reload',async()=>{
- const f=await launch(true,'dist',true);try{
+ const f=await launch(true,process.env.PO_TEST_BUILD??'dist',true);try{
  await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(2);
  await f.page.locator('.po-safe-native').first().hover();await f.page.getByRole('button',{name:'Open cijfer'}).first().click();
  const cdp=await f.context.newCDPSession(f.page);const readAX=async()=>{const r=await cdp.send('Accessibility.getFullAXTree');return r.nodes.filter(n=>!n.ignored).map(n=>n.name?.value??'').join('\n');};
@@ -291,7 +303,7 @@ test('reset closes an in-progress opening and a newly published grade still beco
 });
 
 test('mobile landing respects its CSS gap and Enter advances into the next subject preview',async({page})=>{
- await page.setViewportSize({width:390,height:844});await page.goto('http://127.0.0.1:5173/tester.html');
+ await page.setViewportSize({width:390,height:844});await page.goto('http://127.0.0.1:5174/tester.html');
  await page.getByLabel('Cijfer').selectOption('*');await page.getByLabel('Aantal').fill('2');
  await page.getByRole('button',{name:'Test opening',exact:true}).click();await expect(page.getByRole('button',{name:'Open Cijfer',exact:true})).toBeVisible();await page.keyboard.press('Enter');
  await expect(page.locator('.po-lane')).toBeVisible();await captureLanding(page);
@@ -307,7 +319,7 @@ for(const [label,days,marker] of [['Vandaag',0],['Gisteren',1],['1 okt',null],['
   const date=days===null?new Date(2026,9,1,12):new Date();date.setHours(12,0,0,0);if(days!==null)date.setDate(date.getDate()-days);
   const student=`unrelated-${days}-student`,r={...raw,formattedResultaat:marker?'7,2 !':'7,2',formattedEerstePoging:marker?'7,2 !':'7,2',datumInvoerEerstePoging:date.toISOString(),weging:1,omschrijving:'Eerste toets',additionalObjects:{vaknaam:'Engels',vakuuid:'unrelated-subject',resultaatkolom:543210}};
   const c=card.replaceAll('Wiskunde A','Engels').replaceAll('8,3','7,2').replaceAll('4 okt · Hoofdstuk 3',`${label} • Eerste toets`).replaceAll('2x','1x');
-  const f=await launch(false,'dist',false,{student,raw:r,card:c});try{
+  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:r,card:c});try{
    await f.page.emulateMedia({reducedMotion:'reduce'});await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toHaveCount(0);
    await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();
    const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');
@@ -320,19 +332,19 @@ for(const [label,days,marker] of [['Vandaag',0],['Gisteren',1],['1 okt',null],['
 
 test('real progression subject endpoint and test-title card work without a recent feed',async()=>{
  const student='subject-only-student',c=card.replaceAll('sl-laatste-resultaat-item','sl-vakresultaat-item').replaceAll('<div class="titel">Wiskunde A</div>','<div class="titel">Hoofdstuk 3</div>').replaceAll('4 okt · Hoofdstuk 3','4 okt');
- const f=await launch(false,'dist',false,{student,raw,card:c,subject:true,endpoint:`/rest/v1/geldendvoortgangsdossierresultaten/vakresultaten/${student}/vak/fixture-subject/lichting/fixture-cohort`});
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw,card:c,subject:true,endpoint:`/rest/v1/geldendvoortgangsdossierresultaten/vakresultaten/${student}/vak/fixture-subject/lichting/fixture-cohort`});
  try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('?');}finally{await f.dispose();}
 });
 
 test('a scoped overview can supply a fresh account when the recent result feed is missing',async()=>{
- const student='overview-only-student',f=await launch(false,'dist',false,{student,raw,card,overview:true,endpoint:`/rest/v1/geldendvoortgangsdossierresultaten/leerling/cijferoverzicht/${student}`});
+ const student='overview-only-student',f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw,card,overview:true,endpoint:`/rest/v1/geldendvoortgangsdossierresultaten/leerling/cijferoverzicht/${student}`});
  try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);const state=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState);expect(Object.values(state.records)[0].scope).toBe(hash(state.salt,'account',student));}finally{await f.dispose();}
 });
 
 test('first attempt and retake reveal their own values and never queue an invisible overall grade',async()=>{
  const student='retake-student',r={...raw,formattedResultaat:'6,0',formattedEerstePoging:'4,0',formattedHerkansing1:'8,0',datumInvoerEerstePoging:'2026-09-29T10:00:00+02:00',datumInvoerHerkansing1:raw.datumInvoerEerstePoging};
  const first=card.replaceAll('8,3','4,0').replaceAll('4 okt','29 sep'),second=card.replaceAll('8,3','8,0');
- const f=await launch(false,'dist',false,{student,raw:r,card:first+second});try{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:r,card:first+second});try{
   await f.page.emulateMedia({reducedMotion:'reduce'});await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(2);
   await f.page.locator('.po-safe-native').first().hover();await f.page.getByRole('button',{name:'Open cijfer'}).first().click();
   const cdp=await f.context.newCDPSession(f.page),ax=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(n=>!n.ignored).map(n=>n.name?.value??'').join('\n');
@@ -342,7 +354,7 @@ test('first attempt and retake reveal their own values and never queue an invisi
 });
 
 test('SOMtoday merged progression and exam records keep one real open button',async()=>{
- const student='merged-dossier-student',r={...raw,additionalObjects:{...raw.additionalObjects,resultaatkolom:543210}},f=await launch(false,'dist',false,{student,raw:r,card});
+ const student='merged-dossier-student',r={...raw,additionalObjects:{...raw.additionalObjects,resultaatkolom:543210}},f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:r,card});
  try{
   const type='resultaten.RGeldendExamendossierResultaat',exam={...r,$type:type,links:[{rel:'self',id:'separate-exam-record',type}]};
   await f.context.route('**/rest/v1/geldendexamendossierresultaten/leerling/merged-dossier-student',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({items:[exam]})}));
@@ -357,7 +369,7 @@ for(const timezone of ['UTC','Europe/Amsterdam','America/Los_Angeles']){
   // Synthetic API timestamp; the affected user's raw response has not been provided.
   const student='different-october-student',r={...raw,formattedResultaat:'6,3',formattedEerstePoging:'6,3',datumInvoerEerstePoging:'2026-10-01T00:15:00+02:00',weging:4,omschrijving:'Leesstrategieën',additionalObjects:{vaknaam:'Nederlands',vakuuid:'dutch-subject',resultaatkolom:543210}};
   const c=card.replaceAll('Wiskunde A','Nederlands').replaceAll('8,3','6,3').replaceAll('4 okt · Hoofdstuk 3','1 okt - Leesstrategieën').replaceAll('2x','4x');
-  const f=await launch(false,'dist',false,{student,raw:r,card:c,timezone});try{
+  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:r,card:c,timezone});try{
    await f.page.emulateMedia({reducedMotion:'reduce'});await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');
    await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();
    const cdp=await f.context.newCDPSession(f.page),ax=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(n=>!n.ignored).map(n=>n.name?.value??'').join('\n');
@@ -376,7 +388,7 @@ async function injectDebug(f,records){
  await f.page.evaluate(({records,scope})=>window.postMessage({protocol:'po/1',surface:'recent',scope,complete:false,records},location.origin),{records,scope:debugScope});return debugScope;
 }
 test('UNCHANGED debug userscript pair remains fail-closed without an explicit shared column identity',async()=>{
- const f=await launch(false,'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
   await expect(f.page.locator('.po-safe-native')).toBeVisible();await injectDebug(f,[exactDebugRecord,exactDebugExam]);
   await expect.poll(async()=>Object.keys((await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState)).records).length).toBe(2);
   await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toBeVisible();await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);
@@ -384,7 +396,7 @@ test('UNCHANGED debug userscript pair remains fail-closed without an explicit sh
 });
 test('PROVEN po/1 aliases share one pack, opened state, inventory entry and durable identity after reload',async()=>{
  const records=[{...exactDebugRecord,columnId:'explicit-shared-column'},{...exactDebugExam,columnId:'explicit-shared-column'}];
- const f=await launch(false,'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
   await f.page.emulateMedia({reducedMotion:'reduce'});await expect(f.page.locator('.po-safe-native')).toBeVisible();const debugScope=await injectDebug(f,records);
   await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);
   const pending=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState);expect(Object.values(pending.records).filter(r=>r.scope===debugScope&&r.state==='pending')).toHaveLength(1);expect(Object.keys(pending.aliases)).toHaveLength(2);
@@ -399,7 +411,7 @@ test('PROVEN po/1 aliases share one pack, opened state, inventory entry and dura
 });
 test('distinct result columns and conflicting test codes cannot be merged by identical visible metadata',async()=>{
  for(const patch of [{columnId:'other-column'},{testCode:'OTHER-TEST'}]){
-  const f=await launch(false,'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
+  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
    await expect(f.page.locator('.po-safe-native')).toBeVisible();await injectDebug(f,[{...exactDebugRecord,columnId:'first-column'},{...exactDebugExam,columnId:'first-column',...patch}]);
    await expect.poll(async()=>Object.keys((await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState)).records).length).toBe(2);
    await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toBeVisible();await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);
@@ -408,7 +420,7 @@ test('distinct result columns and conflicting test codes cannot be merged by ide
 });
 
 test('legacy opened raw dossier entries migrate through the real bridge without duplicate inventory or replay',async()=>{
- const f=await launch(false,'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student:'debug-learner',raw:{},card:exactDebugCard});try{
   await expect(f.page.locator('.po-safe-native')).toBeVisible();
   const state=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState),account=hash(state.salt,'account','debug-learner');
   const rawVersion=hash(state.salt,'version','6,3','4x','Debugtoets','2026-10-01T00:00:00','DEBUG','PO-DEBUG','Toetskolom','resultaten.DebugResultaat','Nederlands','po-debug-subject','true','false','false');

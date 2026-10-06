@@ -10,7 +10,7 @@ beforeEach(()=>vi.resetModules());afterEach(()=>vi.unstubAllGlobals());
 async function harness(initial:unknown){
  let stored=structuredClone(initial),listener!:Listener;
  const get=vi.fn(async()=>({poState:structuredClone(stored)})),set=vi.fn(async(data:{poState:State})=>{stored=structuredClone(data.poState);});
- vi.stubGlobal('chrome',{runtime:{id,onMessage:{addListener:(fn:Listener)=>{listener=fn;}}},storage:{local:{get,set}}});
+ vi.stubGlobal('chrome',{runtime:{id,getURL:(path:string)=>`chrome-extension://${id}/${path}`,onMessage:{addListener:(fn:Listener)=>{listener=fn;}}},storage:{local:{get,set}}});
  await import('../src/state/worker');
  const send=(command:unknown,sender:chrome.runtime.MessageSender=popup)=>new Promise<Reply|null>(resolve=>{if(listener({protocol:'po/storage',command},sender,resolve)!==true)resolve(null);});
  return {send,get,set};

@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import {unzipSync} from 'fflate';
 const build=process.env.PO_BUILD_DIR??'dist',archive=process.env.PO_BUILD_ZIP??'pack-opening-voor-somtoday.zip';
 const m=JSON.parse(await readFile(`${build}/manifest.json`,'utf8'));assert.equal(m.manifest_version,3);assert.deepEqual(m.permissions,['storage']);assert.deepEqual(m.host_permissions,['https://leerling.somtoday.nl/*','https://api.github.com/*']);
+assert.equal(m.version,JSON.parse(await readFile('manifest.json','utf8')).version);
+if(m.browser_specific_settings){
+ assert.deepEqual(m.background,{scripts:['worker.js']});
+ assert.equal(m.browser_specific_settings.gecko.id,'cijferreveal@js664.github.io');
+ assert.deepEqual(m.browser_specific_settings.gecko.data_collection_permissions,{required:['none']});
+ assert.equal(m.browser_specific_settings.gecko.strict_min_version,'140.0');
+ assert.equal(m.browser_specific_settings.gecko_android.strict_min_version,'142.0');
+}else assert.equal(m.background.service_worker,'worker.js');
+for(const size of [16,32,48,128]){assert.equal(m.icons[size],`assets/icons/icon-${size}.png`);await access(`${build}/${m.icons[size]}`);}
+for(const name of ['LICENSE','THIRD_PARTY_NOTICES.txt'])assert.equal(await readFile(`${build}/${name}`,'utf8'),await readFile(name,'utf8'));
 assert.equal(m.content_scripts[0].run_at,'document_start');assert.equal(m.content_scripts[1].world,'MAIN');
 for(const c of m.content_scripts){assert.deepEqual(c.matches,['https://leerling.somtoday.nl/*']);for(const f of [...c.js,...(c.css??[])])await access(`${build}/${f}`);}
 for(const c of m.content_scripts)assert(c.exclude_matches?.includes('https://leerling.somtoday.nl/cijfers/vakgemiddelden*'),'vakgemiddelden must not receive extension scripts or styles');

@@ -1,5 +1,12 @@
 # Wat is er veranderd?
 
+## Versie 0.2.7 — 6 oktober 2026
+
+- Cijfers van een ander schoolniveau worden beter herkend.
+- Extra labels verstoren de vaknaam, toets en het cijfer niet.
+- De updatepopup verschijnt zonder extra herladen en noemt CijferReveal.
+- Opgeslagen cijfers en instellingen worden beter gecontroleerd.
+
 ## Versie 0.2.6 — 6 oktober 2026
 
 - De cijferrol draait soepeler en landt op verschillende manieren.

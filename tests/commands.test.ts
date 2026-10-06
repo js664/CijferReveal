@@ -9,6 +9,14 @@ it('only the extension popup can reset, clear history or change settings',()=>{
   expect(authorizeCommand(message(command),popup,id)).toEqual(command);expect(authorizeCommand(message(command),content,id)).toBeNull();
  }
 });
+it('Firefox popup commands require the exact runtime-owned extension origin',()=>{
+ const firefoxId='cijferreveal@js664.github.io',popupUrl='moz-extension://fixture-runtime-uuid/popup.html';
+ expect(authorizeCommand(message({kind:'reset'}),{id:firefoxId,url:popupUrl},firefoxId,popupUrl)).toEqual({kind:'reset'});
+ for(const url of ['moz-extension://another-uuid/popup.html','moz-extension://fixture-runtime-uuid/tester.html','https://leerling.somtoday.nl/popup.html']){
+  expect(authorizeCommand(message({kind:'reset'}),{id:firefoxId,url},firefoxId,popupUrl)).toBeNull();
+ }
+ expect(authorizeCommand(message({kind:'reset'}),{id:'other-extension',url:popupUrl},firefoxId,popupUrl)).toBeNull();
+});
 it('only a top-level SOMtoday content script can observe and open results',()=>{
  const open={kind:'open',key,scope,version,generation:0};
  expect(authorizeCommand(message(open),content,id)).toEqual(open);expect(authorizeCommand(message(observation),content,id)).toEqual(observation);

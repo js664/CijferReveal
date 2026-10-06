@@ -31,14 +31,15 @@ const opened=(id,value,grade,subject,description,openedAt)=>({key:id.repeat(64),
 const card=`<sl-laatste-resultaat-item role="button"><sl-resultaat-item><div class="root" role="text" aria-label="Wiskunde A cijfer 8,3"><div class="details"><div class="titel">Wiskunde A</div><div class="subtitel">4 okt · Hoofdstuk 3</div></div><div class="wegingcijfer"><span class="weging">2x</span><div class="cijfer"><span>8,3</span></div></div></div></sl-resultaat-item></sl-laatste-resultaat-item>`;
 const html=`<!doctype html><html lang="nl"><meta charset="UTF-8"><style>body{margin:0;background:#f4f7fa;font:16px system-ui;color:#21314b}sl-tab-bar{display:flex;gap:24px;padding:0 24px;background:white}sl-tab{display:flex;align-items:center;min-height:56px;padding:0 12px;color:#435267;cursor:pointer}sl-tab[aria-selected="true"]{color:#1d2b3b;border-top:2px solid #3275c6;border-bottom:2px solid #3275c6}sl-cijfers{display:block;margin:40px auto;max-width:900px}sl-laatste-resultaat-item{display:block}.root{display:flex;align-items:center;justify-content:space-between;background:white;padding:24px;border-radius:12px}.po-safe-native{margin:16px 0}.titel{font-weight:600}.subtitel{color:#647188;margin-top:6px}</style><sl-tab-bar role="tablist"><sl-tab role="tab" data-path="/rooster">Rooster</sl-tab><sl-tab role="tab" data-path="/studiewijzer">Studiewijzer</sl-tab><sl-tab role="tab" data-path="/cijfers" aria-selected="true" tabindex="0">Cijfers</sl-tab><sl-tab role="tab" data-path="/berichten">Berichten</sl-tab></sl-tab-bar><sl-root></sl-root><script>window.fixtureCard=${JSON.stringify(card)};window.mount=async()=>{document.querySelector('sl-root').innerHTML='<sl-home><sl-cijfers><h1>Cijfers</h1><sl-laatsteresultaten></sl-laatsteresultaten></sl-cijfers></sl-home>';await fetch('/rest/v1/geldendvoortgangsdossierresultaten/leerling/fixture-student');document.querySelector('sl-laatsteresultaten').innerHTML=window.fixtureCard;window.initialVisibility=getComputedStyle(document.querySelector('sl-laatste-resultaat-item')).display;};document.querySelectorAll('sl-tab-bar sl-tab').forEach(tab=>tab.onclick=e=>{const path=tab.getAttribute('data-path');history.pushState({},'',path);document.querySelectorAll('sl-tab-bar sl-tab').forEach(item=>{item.setAttribute('aria-selected',String(item===tab));if(item!==tab)item.removeAttribute('tabindex');else item.tabIndex=0;});if(path==='/cijfers')window.mount();else document.querySelector('sl-root').innerHTML='<sl-home><p>Rooster</p></sl-home>';});window.addEventListener('popstate',()=>location.pathname==='/cijfers'?window.mount():document.querySelector('sl-root').replaceChildren());setTimeout(window.mount,180);</script></html>`;
 const fixtureHtml=html.replace('</style>',`:root{--bg-base:#1b1f22;--bg-elevated-weak:#252b2f;--border-weak:#3b444b;--text-base:#e2e6e9;--text-muted:#aeb8c0;color-scheme:dark}body{background:var(--bg-base);color:var(--text-base);font-family:"Open Sans",sans-serif}.fixture-header{display:flex;align-items:center;height:64px;padding:0 24px;background:#20262a;font-size:20px;font-weight:600}sl-tab-bar{gap:12px;background:var(--bg-elevated-weak);overflow-x:auto}sl-tab{color:var(--text-muted);flex-shrink:0}sl-tab[aria-selected="true"]{color:var(--text-base);border-color:#80b5ed}sl-cijfers{max-width:1180px;margin:24px auto}.root{background:var(--bg-elevated-weak)}.subtitel{color:var(--text-muted)}@media(max-width:600px){sl-tab-bar{gap:0;padding:0 8px}sl-tab{padding:0 8px}} </style>`).replace('<sl-tab-bar role="tablist">','<header class="fixture-header">SOMtoday</header><sl-tab-bar role="tablist">');
-async function launch(seed=false,build=process.env.PO_TEST_BUILD??'dist',stars=false,variant=null,updateRelease=null){
+async function launch(seed=false,build=process.env.PO_TEST_BUILD??'dist',stars=false,variant=null,updateRelease=null,initialPath='/cijfers'){
  const dir=await mkdtemp(resolve(tmpdir(),'po-extension-'));
  const context=await chromium.launchPersistentContext(dir,{channel:'chromium',headless:true,timezoneId:variant?.timezone,args:[`--disable-extensions-except=${resolve(build)}`,`--load-extension=${resolve(build)}`]});
  let worker=context.serviceWorkers()[0];if(!worker)worker=await context.waitForEvent('serviceworker');
  const id=worker.url().split('/')[2];
  if(seed)await worker.evaluate(async data=>{await chrome.storage.local.set({poState:data});},{schema:2,salt,records:{[key]:{key,scope,version,state:'pending',numeric:true,firstSeen:1,display}},coverage:{[scope]:{overview:true,subject:true,armed:true}},collection:[],settings:{sound:false,volume:.7,motion:'system'}});
  await context.route('https://leerling.somtoday.nl/**',route=>{const url=route.request().url();return route.fulfill({status:200,contentType:url.includes('/rest/')?'application/json':'text/html',body:url.includes('/rest/')?JSON.stringify({items:[raw]}):fixtureHtml});});
- if(updateRelease)await context.route('https://api.github.com/repos/js664/CijferReveal/releases/latest',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(updateRelease)}));
+ let updateRequests=0;
+ if(updateRelease)await context.route('https://api.github.com/repos/js664/CijferReveal/releases/latest',route=>{updateRequests++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(updateRelease)});});
  if(stars){
  const starRaw={...raw,formattedResultaat:'*',links:[{rel:'self',id:1234567890123,type:raw.$type}]},second={...starRaw,links:[{rel:'self',id:1234567890124,type:raw.$type}],omschrijving:'Hoofdstuk 4'};
  const starCard=card.replaceAll('8,3','*'),starHtml=fixtureHtml.replace(JSON.stringify(card),JSON.stringify(starCard+starCard.replaceAll('Hoofdstuk 3','Hoofdstuk 4'))).replace("fetch('/rest/v1/","fetch('https://api.somtoday.nl/rest/v1/");
@@ -53,8 +54,8 @@ async function launch(seed=false,build=process.env.PO_TEST_BUILD??'dist',stars=f
   if(variant.exam)body=body.replaceAll('geldendvoortgangsdossierresultaten','geldendexamendossierresultaten');
   await context.route('https://leerling.somtoday.nl/**',route=>route.fulfill({status:200,contentType:route.request().url().includes('/rest/')?'application/json':'text/html',body:route.request().url().includes('/rest/')?JSON.stringify(variant.overview?{vakResultaten:[{perioden:[{resultaten:[variant.raw]}]}]}:{items:[variant.raw]}):body}));
  }
- const page=await context.newPage();await page.goto('https://leerling.somtoday.nl/cijfers');
- return {page,context,worker,id,dispose:async()=>{await context.close();await rm(dir,{recursive:true,force:true});}};
+ const page=await context.newPage();await page.goto(`https://leerling.somtoday.nl${initialPath}`);
+ return {page,context,worker,id,updateRequests:()=>updateRequests,dispose:async()=>{await context.close();await rm(dir,{recursive:true,force:true});}};
 }
 test('fresh install masks a numeric grade but offers its matching pack; SPA/remount/mobile/portals',async()=>{
  const f=await launch();try{await expect(f.page.locator('.po-safe-native')).toBeVisible();expect(await f.page.evaluate(()=>window.initialVisibility)).not.toBe('none');await expect(f.page.locator('sl-resultaat-item .root')).toBeVisible();await expect(f.page.locator('sl-resultaat-item .cijfer')).toHaveCSS('visibility','visible');await expect(f.page.locator('sl-resultaat-item .cijfer')).toHaveText('?');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
@@ -69,6 +70,53 @@ test('latest stable GitHub API release shows a Dutch update notice with the API 
  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.7',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.7',draft:false,prerelease:false});
  try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.7');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
 });
+test('home prefetch shows the branded update notice on entering Cijfers without a reload',async()=>{
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.7',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.7',draft:false,prerelease:false},'/');
+ try{
+  await expect.poll(f.updateRequests).toBe(1);await expect(f.page.locator('.po-update-notice')).toHaveCount(0);
+  await f.page.getByRole('tab',{name:'Cijfers',exact:true}).click();
+  await expect(f.page.locator('.po-update-notice')).toBeVisible();await expect(f.page.getByText('CijferReveal-extensie',{exact:true})).toBeVisible();
+  expect(f.updateRequests()).toBe(1);
+  await f.page.getByRole('tab',{name:'Rooster',exact:true}).click();await expect(f.page.locator('.po-update-notice')).toHaveCount(0);
+  await f.page.getByRole('tab',{name:'Cijfers',exact:true}).click();await expect(f.page.locator('.po-update-notice')).toBeVisible();
+  await f.page.reload();await expect(f.page.locator('.po-update-notice')).toBeVisible();expect(f.updateRequests()).toBe(1);
+ }finally{await f.dispose();}
+});
+test('additional trajectory labels and unknown badges allow one correct opening and survive reload without duplicates',async()=>{
+ const extraCard=card
+  .replace('<div class="details">','<div class="metadata"><span class="titel">Other subject</span><span class="cijfer">2,7</span><span class="weging">99x</span></div><div class="details">')
+  .replace('Wiskunde A</div>','Wiskunde A<hmy-level-label>HAVO</hmy-level-label><span class="unknown-badge">VWO</span></div>')
+  .replace('4 okt · Hoofdstuk 3</div>','<hmy-random-label>Unknown</hmy-random-label>4 okt · Hoofdstuk 3<hmy-other-tag>HAVO / VWO</hmy-other-tag></div>')
+  .replace('2x</span>','2x<hmy-weight-label>Unknown</hmy-weight-label></span>')
+  .replace('<span>8,3</span>','<span>8,3</span><hmy-grade-label>VWO</hmy-grade-label>');
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{card:extraCard,raw,student:'trajectory-student'});
+ try{
+  await f.page.emulateMedia({reducedMotion:'reduce'});
+  await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
+  await f.page.getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');
+  const readAX=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(node=>!node.ignored).map(node=>node.name?.value??'').join('\n');
+  await expect.poll(readAX).toContain('Cijfer 8,3');await clickAXButton(cdp,'Terug naar SOMtoday');
+  await f.page.reload();await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);
+  expect(await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState.collection.length)).toBe(1);
+ }finally{await f.dispose();}
+});
+test('production alternative-norming fields open their own grade and persist separately from the standard result',async()=>{
+ const alternativeCard=card.replace('<div class="titel">Wiskunde A</div>','<div class="titel-container"><span class="titel">Wiskunde A</span><span class="titel-postfix">\u00a0HAVO</span></div>').replaceAll('8,3','6,3');
+ const source={...raw,formattedEerstePoging:'8,3',formattedEerstePogingAlternatief:'6,3',additionalObjects:{...raw.additionalObjects,resultaatkolom:{id:'trajectory-column',type:'Toetskolom'},naamalternatiefniveau:'HAVO'}};
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{card:card+alternativeCard,raw:source,student:'alternative-student'});
+ try{
+  await f.page.emulateMedia({reducedMotion:'reduce'});
+  await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(2);await expect(f.page.locator('[data-po-link-problem="matched"]')).toHaveCount(2);
+  await f.page.locator('.po-safe-native').last().getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');
+  const readAX=async()=> (await cdp.send('Accessibility.getFullAXTree')).nodes.filter(node=>!node.ignored).map(node=>node.name?.value??'').join('\n');
+  await expect.poll(readAX).toContain('Cijfer 6,3');await clickAXButton(cdp,'Terug naar SOMtoday');
+  await f.page.reload();await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);
+  await expect(f.page.locator('sl-laatste-resultaat-item').last().locator('.cijfer')).toHaveText('6,3');
+  await expect(f.page.locator('sl-laatste-resultaat-item').first().locator('.cijfer')).toHaveText('?');
+  expect(await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState.collection.map(entry=>entry.value))).toEqual(['6,3']);
+ }finally{await f.dispose();}
+});
+
 test('retry reloads SOMtoday so a transient grade-card mismatch can be observed again',async()=>{
  const f=await launch();try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await f.page.evaluate(()=>{document.querySelector('sl-laatste-resultaat-item .subtitel').textContent='4 okt · Nog niet geladen';});await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toBeVisible();const navigation=f.page.waitForNavigation();await f.page.getByRole('button',{name:'Pagina opnieuw laden'}).click();await navigation;await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();}finally{await f.dispose();}
 });

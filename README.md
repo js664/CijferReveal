@@ -66,3 +66,13 @@ npm run build
 ```
 
 De extensie staat daarna in de map `dist`. Laad die via **Uitgepakte extensie laden**.
+
+### Firefox-build controleren
+
+De Firefox-versie wordt gebouwd uit de leesbare bronbestanden. De build maakt daaruit de bestanden voor Firefox.
+
+1. Installeer Node.js 22.12 of nieuwer op Windows, macOS of Linux.
+2. Open een terminal in de projectmap en voer `npm ci` uit. Dit installeert de vastgelegde onderdelen; internet is daarvoor nodig.
+3. Voer `npm run build:firefox` uit. De map `dist-firefox` en het bestand `CijferReveal-Firefox.zip` worden gemaakt.
+
+Om de tijdelijke build op Firefox voor computer te laden, open `about:debugging#/runtime/this-firefox`, klik op **Tijdelijke add-on laden…** en kies `dist-firefox/manifest.json`.

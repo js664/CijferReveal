@@ -1,9 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Pack Opening voor SOMtoday",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Open zichtbare cijfers met een lokale pack opening. Cijfers zijn vooraf bepaald.",
   "minimum_chrome_version": "111",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
   "permissions": [
     "storage"
   ],
@@ -16,6 +22,10 @@
     "type": "module"
   },
   "action": {
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png"
+    },
     "default_popup": "popup.html",
     "default_title": "Pack Opening voor SOMtoday"
   },

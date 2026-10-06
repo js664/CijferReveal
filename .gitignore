@@ -1,6 +1,8 @@
 node_modules/
 dist/
 dist-dev/
+dist-firefox/
+store-builds/
 dist-developer-*/
 pack-opening-voor-somtoday/
 *.zip
@@ -25,3 +27,4 @@ assets/reel-tick.mp3
 assets/reveal-impact.mp3
 assets/inventory-music*
 SHA256SUMS.txt
+dist-snapshot-*/

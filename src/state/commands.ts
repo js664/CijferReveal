@@ -4,10 +4,13 @@ import {validRecord,validateObservation} from '../somtoday/schemas';
 
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
-export function authorizeCommand(message:unknown,sender:chrome.runtime.MessageSender,id:string):Command|null{
+export function authorizeCommand(message:unknown,sender:chrome.runtime.MessageSender,id:string,popupUrl=`chrome-extension://${id}/popup.html`):Command|null{
  if(sender.id!==id||!object(message)||message.protocol!=='po/storage'||!object(message.command))return null;
  let url:URL;try{url=new URL(sender.url??'');}catch{return null;}
- const popup=url.protocol==='chrome-extension:'&&url.hostname===id&&url.pathname==='/popup.html';
+ // Firefox's extension URL uses a browser-assigned UUID, not runtime.id.
+ // Trust only the popup URL supplied by our runtime, never a sender's host.
+ let expected:URL;try{expected=new URL(popupUrl);}catch{return null;}
+ const popup=['chrome-extension:','moz-extension:'].includes(expected.protocol)&&url.protocol===expected.protocol&&url.hostname===expected.hostname&&url.port===expected.port&&!url.username&&!url.password&&url.pathname==='/popup.html'&&expected.pathname==='/popup.html';
  const content=url.origin==='https://leerling.somtoday.nl'&&!url.username&&!url.password&&!!sender.tab&&sender.frameId===0;
  if(!popup&&!content)return null;
  const c=message.command;

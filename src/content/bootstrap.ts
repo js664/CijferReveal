@@ -1,6 +1,7 @@
 import {Bridge} from './bridge';
 import {Experience} from './mount';
 import {joinCard,explainCard} from '../somtoday/dom-join';
+import {readCardTuple} from '../somtoday/dom-card';
 import {nativeCardValues,presentCard,type Presentation} from '../spoiler/recent-card';
 import {presentDerived,presentOverview} from '../spoiler/derived';
 import {injectInventoryTab,type InventoryTabController} from '../collection/CollectionTab';
@@ -8,6 +9,8 @@ import {listenRoutes} from './route-controller';
 import {syncUpdateNotice,disposeUpdateNotice} from './update-notice';
 import type {State} from '../state/schema';
 import {diagnose,diagnosticReport,diagnosticStage,isConcealed,updateCardDiagnostic} from '../dev/diagnostics';
+// Start the version lookup on the SOMtoday landing page, before the user opens Cijfers.
+syncUpdateNotice();
 if(import.meta.env.DEV)diagnosticStage('document-start','document',!document.querySelector('sl-laatste-resultaat-item,sl-vakresultaat-item'));
 let cssMeasured=false;
 const OWNER='sl-laatste-resultaat-item,sl-vakresultaat-item';
@@ -58,7 +61,7 @@ function reconcileOwner(owner:HTMLElement){
  }
  if(unsupportedOwners.has(owner)){const original=unsupportedOwners.get(owner);if(original===null)owner.removeAttribute('aria-hidden');else if(original!==undefined)owner.setAttribute('aria-hidden',original);unsupportedOwners.delete(owner);owner.classList.remove('po-unsupported-owner');}
  diagnose(owner);
- const native=nativeCardValues(owner);const tuple={subject:owner.querySelector('.titel')?.textContent??'',subtitle:owner.querySelector('.subtitel')?.textContent??'',weight:native.weight,value:native.value,kind:owner.matches('sl-vakresultaat-item')?'subject' as const:'recent' as const,family:owner.closest('sl-examenresultaten')?'exam':owner.closest('sl-voortgangsresultaten')?'progression':undefined};
+ const tuple=readCardTuple(owner,nativeCardValues(owner));
  const live=[...bridge.records.values()].filter(r=>r.scope===bridge.activeScope);
  const explanation=explainCard(tuple,live.map(x=>x.record),record=>live.find(x=>x.record===record)!.key);
  const result=failed?null:joinCard(tuple,live.map(x=>x.record),record=>live.find(x=>x.record===record)!.key);

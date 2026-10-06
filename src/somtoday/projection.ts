@@ -22,9 +22,17 @@ function projectRecord(input:unknown,resource:Resource,aggregate=false):ResultRe
  // current overall grade. Keep first-attempt identities compatible with v0.2.
  add(first||(date1||date2||retake1||retake2?'':overall),firstDate);
  add(retake1,date1,'attempt-1');add(retake2,date2,'attempt-2');
+ // SOMtoday's recent-result builder emits separate alternative-norming
+ // attempts with the same raw result ID and dates (chunk-B26NUKKB.js).
+ // Keep them distinct throughout matching, opening and storage.
+ if(resource.family==='progression'){
+  add(text(r.formattedEerstePogingAlternatief,32).trim(),firstDate,'alternative-first');
+  add(text(r.formattedHerkansing1Alternatief,32).trim(),date1,'alternative-attempt-1');
+  add(text(r.formattedHerkansing2Alternatief,32).trim(),date2,'alternative-attempt-2');
+ }
  const latest=date2||date1||firstDate;
  const sameValue=(a:string,b:string)=>{const left=normalizeGradeValue(a),right=normalizeGradeValue(b);return left!==null&&right!==null&&(left===right||(parseGrade(left)!==null&&parseGrade(left)===parseGrade(right)));};
- if(overall&&!variants.some(attempt=>sameValue(attempt.value,overall)&&attempt.date===latest))add(overall,latest,variants.length?'current':undefined);
+ if(overall&&!variants.some(attempt=>!attempt.variant?.startsWith('alternative-')&&sameValue(attempt.value,overall)&&attempt.date===latest))add(overall,latest,variants.some(attempt=>!attempt.variant?.startsWith('alternative-'))?'current':undefined);
  return variants;
 }
 export function projectResponse(body:unknown,resource:Resource):ResultRecord[]{

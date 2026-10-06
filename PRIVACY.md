@@ -12,7 +12,7 @@ Deze gegevens staan alleen in de extensie op jouw apparaat. Om cijfers uit elkaa
 
 ## Wat wordt online verstuurd?
 
-Voor updates vraagt de extensie de officiële GitHub-API naar het nieuwste versienummer en de downloadlink. Je cijfers, accountgegevens en cookies gaan niet mee. De aanvraag bevat ook geen pagina-adres. GitHub kan wel je IP-adres zien. De extensie leest alleen de versie en link; deze controle haalt geen code op of start die.
+Voor updates vraagt de extensie de officiële GitHub-API naar het nieuwste versienummer en de downloadlink. Je cijfers, accountgegevens en cookies gaan niet mee. De aanvraag bevat ook geen pagina-adres. GitHub kan wel je IP-adres zien. De extensie leest alleen de versie en link; deze controle haalt geen code op of start die. De updategegevens worden lokaal bewaard. Na een uur zijn ze verouderd en controleert de extensie bij een volgend bezoek opnieuw.
 
 SOMtoday blijft zelf gegevens ophalen zoals altijd. CijferReveal leest passende antwoorden die SOMtoday al aan de pagina heeft gegeven. Het vraagt geen extra cijfergegevens op en leest of bewaart geen wachtwoorden, cookies of inlogtokens.
 

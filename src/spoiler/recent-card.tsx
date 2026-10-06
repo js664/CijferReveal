@@ -2,6 +2,7 @@ import {createRoot} from 'react-dom/client';
 import {motion} from 'motion/react';
 import type {DisplayResult,ResultRecord} from '../somtoday/types';
 import type {Lifecycle} from '../state/schema';
+import {cardFields,fieldTextNodes} from '../somtoday/dom-card';
 export interface Presentation { host:HTMLElement;update:(result:ResultRecord|null,status:Lifecycle|undefined,display:DisplayResult|undefined,onOpen:(result:DisplayResult,origin:HTMLElement)=>void,onRetry?:()=>void)=>void;dispose:()=>void; }
 const MASK='?';
 type NativeValue={element:HTMLElement|null;parts:{node:Text;text:string}[]};
@@ -9,22 +10,25 @@ type NativeSnapshot={grade:NativeValue;weight:NativeValue};
 const nativeSnapshots=new WeakMap<HTMLElement,NativeSnapshot>();
 const captureNative=(element:HTMLElement|null):NativeValue=>{
  if(!element)return {element:null,parts:[]};
- const walker=document.createTreeWalker(element,NodeFilter.SHOW_TEXT),parts:{node:Text;text:string}[]=[];
- for(let node=walker.nextNode();node;node=walker.nextNode())parts.push({node:node as Text,text:node.nodeValue??''});
+ const parts=fieldTextNodes(element).map(node=>({node,text:node.nodeValue??''}));
  return {element,parts};
 };
-const isMasked=(value:NativeValue)=>value.parts.length>0&&value.parts.every(part=>value.element?.contains(part.node)&&part.node.nodeValue===MASK);
-function readNative(owner:HTMLElement,selector:string,field:'grade'|'weight'){
- const node=owner.querySelector<HTMLElement>(selector),current=node?.textContent??'',snapshot=nativeSnapshots.get(owner),saved=snapshot?.[field];
+const isMasked=(value:NativeValue)=>{
+ const current=fieldTextNodes(value.element);
+ return value.parts.length>0&&current.length===value.parts.length&&value.parts.every((part,index)=>current[index]===part.node&&part.node.nodeValue===MASK);
+};
+function readNative(owner:HTMLElement,field:'grade'|'weight'){
+ const node=cardFields(owner)[field],current=fieldTextNodes(node).map(part=>part.nodeValue??'').join(''),snapshot=nativeSnapshots.get(owner),saved=snapshot?.[field];
  if(saved?.element===node&&isMasked(saved))return saved.parts.map(part=>part.text).join('');
  if(snapshot)snapshot[field]=captureNative(node);else nativeSnapshots.set(owner,{grade:field==='grade'?captureNative(node):captureNative(null),weight:field==='weight'?captureNative(node):captureNative(null)});
  return current;
 }
-export function nativeCardValues(owner:HTMLElement){return {value:readNative(owner,'.cijfer','grade'),weight:readNative(owner,'.weging','weight')};}
+export function nativeCardValues(owner:HTMLElement){return {value:readNative(owner,'grade'),weight:readNative(owner,'weight')};}
 function maskNativeValues(owner:HTMLElement,blocked:boolean){
  const snapshot=nativeSnapshots.get(owner)??{grade:captureNative(null),weight:captureNative(null)};
- for(const [field,selector] of [['grade','.cijfer'],['weight','.weging']] as const){
-  const node=owner.querySelector<HTMLElement>(selector);if(!node)continue;
+ const fields=cardFields(owner);
+ for(const field of ['grade','weight'] as const){
+  const node=fields[field];if(!node)continue;
   if(snapshot[field].element!==node||!isMasked(snapshot[field]))snapshot[field]=captureNative(node);
   const saved=snapshot[field];
   if(blocked){for(const part of saved.parts)if(part.node.nodeValue!==MASK)part.node.nodeValue=MASK;}

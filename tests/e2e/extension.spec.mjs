@@ -1,8 +1,11 @@
 import {test,expect,chromium} from '@playwright/test';
 import {resolve} from 'node:path';
-import {mkdtemp,rm,mkdir} from 'node:fs/promises';
+import {mkdtemp,rm,mkdir,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
+const testManifest=JSON.parse(await readFile(resolve(process.env.PO_TEST_BUILD??'dist','manifest.json'),'utf8'));
+const nextReleaseTag='v'+(Number(testManifest.version.split('.')[0])+1)+'.0.0';
+const nextReleaseUrl='https://github.com/js664/CijferReveal/releases/tag/'+nextReleaseTag;
 const hash=(...parts)=>createHash('sha256').update(JSON.stringify(parts)).digest('hex');
 const clickAXButton=async(cdp,name)=>{const {nodes}=await cdp.send('Accessibility.getFullAXTree');const node=nodes.find(n=>!n.ignored&&n.role?.value==='button'&&n.name?.value===name&&n.backendDOMNodeId);if(!node)throw new Error(`Accessible button not found: ${name}`);const resolved=await cdp.send('DOM.resolveNode',{backendNodeId:node.backendDOMNodeId});await cdp.send('Runtime.callFunctionOn',{objectId:resolved.object.objectId,functionDeclaration:'function(){this.click();}',returnByValue:true});};
 // Measure the landing at the phase change, while the exiting reel still exists.
@@ -67,11 +70,11 @@ test('fresh install masks a numeric grade but offers its matching pack; SPA/remo
  }finally{await f.dispose();}
 });
 test('latest stable GitHub API release shows a Dutch update notice with the API release link',async()=>{
- const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.7',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.7',draft:false,prerelease:false});
- try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.7');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:nextReleaseTag,html_url:nextReleaseUrl,draft:false,prerelease:false});
+ try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href',nextReleaseUrl);await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
 });
 test('home prefetch shows the branded update notice on entering Cijfers without a reload',async()=>{
- const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.7',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.7',draft:false,prerelease:false},'/');
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:nextReleaseTag,html_url:nextReleaseUrl,draft:false,prerelease:false},'/');
  try{
   await expect.poll(f.updateRequests).toBe(1);await expect(f.page.locator('.po-update-notice')).toHaveCount(0);
   await f.page.getByRole('tab',{name:'Cijfers',exact:true}).click();

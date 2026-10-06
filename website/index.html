@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#10151c" />
-    <meta name="description" content="CijferReveal — open je SOMtoday-cijfers één voor één." />
+    <meta name="description" content="Download CijferReveal voor SOMtoday." />
     <title>CijferReveal</title>
     <style>
       :root {
@@ -144,7 +144,9 @@
       .store-button:disabled { opacity: .78; }
       .store-button:disabled:hover { background: #171e27; border-color: #ffffff20; transform: none; box-shadow: none; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
-      .brand-note { max-width: none; margin: 18px 0 0; color: #82909f; font-size: 11px; line-height: 1.55; }
+      .brand-note { margin-top: 18px; color: #82909f; font-size: 11px; line-height: 1.55; text-align: left; }
+      .brand-note summary { width: fit-content; margin: 0 auto; cursor: pointer; text-underline-offset: 3px; }
+      .brand-note p { max-width: 38ch; margin: 8px auto 0; font-size: 11px; line-height: 1.55; }
       .faq-dialog {
         width: min(560px, calc(100% - 36px));
         max-height: calc(100svh - 36px);
@@ -198,7 +200,7 @@
       <a class="repo-link download-link" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip">
         <span class="link-end">
           <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
-          <span>Download laatste versie</span>
+          <span>Download de nieuwste versie</span>
         </span>
         <span class="download-version" aria-label="Versie v__EXTENSION_VERSION__">v__EXTENSION_VERSION__</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
@@ -219,10 +221,13 @@
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
       <a class="repo-link faq-link" href="#faq" aria-haspopup="dialog" aria-controls="faq-dialog">
-        <span>Hulp en veelgestelde vragen</span>
+        <span>Veelgestelde vragen</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
-      <p class="brand-note">Chrome is een merk van Google. Firefox is een handelsmerk van Mozilla Foundation. CijferReveal is onafhankelijk.</p>
+      <details class="brand-note">
+        <summary>Merkinformatie</summary>
+        <p>Chrome is een merk van Google. Firefox is een merk van Mozilla Foundation. CijferReveal staat los van beide.</p>
+      </details>
       <footer class="privacy-footer"><a class="privacy-link" href="privacy.html">Privacy</a></footer>
     </main>
     <dialog class="faq-dialog" id="faq-dialog" aria-labelledby="faq-title">
@@ -233,12 +238,12 @@
         </button>
       </div>
       <details>
-        <summary>De draaianimatie ontbreekt. Hoe los ik dat op?</summary>
-        <p>Waarschijnlijk staat bewegingsvermindering aan. Zet op Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong> en herlaad daarna SOMtoday.</p>
+        <summary>Ik zie geen draaiende animatie. Wat kan ik doen?</summary>
+        <p>Zet in Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong>. Herlaad daarna SOMtoday.</p>
       </details>
       <details>
-        <summary>Wanneer komt CijferReveal in de Chrome Web Store en Firefox Add-ons?</summary>
-        <p>Naar verwachting binnen een paar dagen. We mikken voor beide winkels op <strong>10 oktober 2026</strong>.</p>
+        <summary>Wanneer staat CijferReveal in de Chrome Web Store en Firefox Add-ons?</summary>
+        <p>We verwachten dat CijferReveal op <strong>10 oktober 2026</strong> in beide winkels staat.</p>
       </details>
     </dialog>
     <script src="faq.js" defer></script>

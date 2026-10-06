@@ -6,11 +6,11 @@ const page=new DOMParser().parseFromString(readFileSync('website/index.html','ut
 it('puts the permanent latest ZIP download first and keeps the other actions in the requested order',()=>{
  const actions=[...page.querySelectorAll('main > a, main > button')];
  expect(actions.map(node=>node.textContent?.replace(/\s+/g,' ').trim())).toEqual([
-  'Download laatste versie v__EXTENSION_VERSION__',
+  'Download de nieuwste versie v__EXTENSION_VERSION__',
   'Chrome Web Store — Binnenkort',
   'Firefox — Binnenkort',
   'Bekijk broncode op GitHub',
-  'Hulp en veelgestelde vragen'
+  'Veelgestelde vragen'
  ]);
  expect(actions[0].tagName).toBe('A');
  expect(actions[0].getAttribute('href')).toBe('https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip');
@@ -33,8 +33,8 @@ it('puts the permanent latest ZIP download first and keeps the other actions in 
 it('includes animation help and the expected store availability in the FAQ',()=>{
  const faq=page.querySelector('#faq-dialog')!;
  expect([...faq.querySelectorAll('summary')].map(node=>node.textContent?.trim())).toEqual([
-  'De draaianimatie ontbreekt. Hoe los ik dat op?',
-  'Wanneer komt CijferReveal in de Chrome Web Store en Firefox Add-ons?'
+  'Ik zie geen draaiende animatie. Wat kan ik doen?',
+  'Wanneer staat CijferReveal in de Chrome Web Store en Firefox Add-ons?'
  ]);
  expect(faq.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
  expect(faq.textContent).not.toContain('Een kleiner scherm');

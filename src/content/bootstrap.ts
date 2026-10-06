@@ -11,7 +11,9 @@ import {diagnose,diagnosticReport,diagnosticStage,isConcealed,updateCardDiagnost
 if(import.meta.env.DEV)diagnosticStage('document-start','document',!document.querySelector('sl-laatste-resultaat-item,sl-vakresultaat-item'));
 let cssMeasured=false;
 const OWNER='sl-laatste-resultaat-item,sl-vakresultaat-item';
-const isExcludedRoute=()=>/^\/cijfers\/vakgemiddelden(?:\/|$)/i.test(location.pathname);
+// Subject details are opened from Vakgemiddelden. Keep both screens entirely
+// native so a grade on a subject result card cannot start or replay a pack.
+const isExcludedRoute=()=>/^\/cijfers\/(?:vakgemiddelden|vakresultaten)(?:\/|$)/i.test(location.pathname);
 const unsupportedOwners=new WeakMap<HTMLElement,string|null>();
 const presentations=new Map<HTMLElement,Presentation>();let gradeRoot:HTMLElement|null=null,gradeObserver:MutationObserver|null=null,scheduled=false,failed=false;
 let excludedRoute=false;

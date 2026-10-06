@@ -3,7 +3,7 @@ let lastPath='';
 let checking=false;
 
 function clear(){notice?.remove();notice=null;}
-function eligible(){return location.hostname==='leerling.somtoday.nl'&&/^\/cijfers(?:\/|$)/i.test(location.pathname)&&!/^\/cijfers\/vakgemiddelden(?:\/|$)/i.test(location.pathname);}
+function eligible(){return location.hostname==='leerling.somtoday.nl'&&/^\/cijfers(?:\/|$)/i.test(location.pathname)&&!/^\/cijfers\/(?:vakgemiddelden|vakresultaten)(?:\/|$)/i.test(location.pathname);}
 
 async function check(){
  if(!eligible()||checking)return;

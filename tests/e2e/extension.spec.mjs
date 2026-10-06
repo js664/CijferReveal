@@ -66,8 +66,8 @@ test('fresh install masks a numeric grade but offers its matching pack; SPA/remo
  }finally{await f.dispose();}
 });
 test('latest stable GitHub API release shows a Dutch update notice with the API release link',async()=>{
- const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.6',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.6',draft:false,prerelease:false});
- try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.6');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
+ const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,null,{tag_name:'v0.2.7',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.7',draft:false,prerelease:false});
+ try{await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toBeVisible({timeout:10000});await expect(f.page.getByText('Update beschikbaar')).toBeVisible();await expect(f.page.getByRole('link',{name:'Update bekijken'})).toHaveAttribute('href','https://github.com/js664/CijferReveal/releases/tag/v0.2.7');await f.page.getByRole('button',{name:'Melding sluiten'}).click();await expect(f.page.getByRole('status',{name:'Extensie-update beschikbaar'})).toHaveCount(0);}finally{await f.dispose();}
 });
 test('retry reloads SOMtoday so a transient grade-card mismatch can be observed again',async()=>{
  const f=await launch();try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await f.page.evaluate(()=>{document.querySelector('sl-laatste-resultaat-item .subtitel').textContent='4 okt · Nog niet geladen';});await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toBeVisible();const navigation=f.page.waitForNavigation();await f.page.getByRole('button',{name:'Pagina opnieuw laden'}).click();await navigation;await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();}finally{await f.dispose();}
@@ -87,7 +87,7 @@ test('returning from vakgemiddelden keeps grade matches and subject pages free o
   await f.page.evaluate(()=>{history.pushState({},'','/cijfers/vakgemiddelden');document.querySelector('sl-root').innerHTML='<sl-home><sl-cijfers><h1>Vakgemiddelden</h1><sl-vakgemiddelde-item-cijfer><span>7,2</span></sl-vakgemiddelde-item-cijfer></sl-cijfers></sl-home>';});
   await expect(f.page.locator('html')).toHaveAttribute('data-po-route-excluded','true');await expect(f.page.locator('.po-safe-native,.po-inventory-tab')).toHaveCount(0);
   await f.page.evaluate(subjectCard=>{history.pushState({},'','/cijfers/vakresultaten?vak=2f4ccfd9-77c8-41a7-82a1-77609d665ceb&lichting=c5216b78-feed-47aa-82bb-244b45932f9c&plaatsing=68ab2cd8-470b-4df9-ac4e-2e05fed147a7&vaknaam=bedrijfseconomie');document.querySelector('sl-root').innerHTML=`<sl-home><sl-cijfers><sl-vakresultaten><div class="periodeheader"><div class="gemiddeldes-container"><div class="gemiddelde-wrapper"><div class="cijfer">*</div></div><div class="gemiddelde-wrapper"><div class="cijfer">*</div></div></div></div><sl-voortgangsresultaten>${subjectCard}</sl-voortgangsresultaten></sl-vakresultaten></sl-cijfers></sl-home>`;},subjectCard);
-  await expect(f.page.locator('html')).not.toHaveAttribute('data-po-route-excluded');await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await expect(f.page.locator('sl-vakresultaten .po-derived-placeholder')).toHaveCount(0);await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toHaveCount(0);
+  await expect(f.page.locator('html')).toHaveAttribute('data-po-route-excluded','true');await expect(f.page.locator('.po-safe-native,.po-experience-host,.po-inventory-tab,.po-derived-placeholder,.po-overview-status')).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Cijfer opnieuw openen'})).toHaveCount(0);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('8,3');await expect(f.page.locator('sl-vakresultaten .po-derived-placeholder')).toHaveCount(0);await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toHaveCount(0);
   await f.page.evaluate(()=>{history.pushState({},'','/cijfers');document.querySelector('sl-root').innerHTML=`<sl-home><sl-cijfers><h1>Cijfers</h1><sl-laatsteresultaten>${window.fixtureCard}</sl-laatsteresultaten></sl-cijfers></sl-home>`;});
   await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();await expect(f.page.getByText('Cijfer nog niet gekoppeld')).toHaveCount(0);
  }finally{await f.dispose();}
@@ -128,30 +128,24 @@ test('fresh install can match and open a SOMtoday letter grade',async()=>{
   await expect(f.page.locator('sl-resultaat-item .cijfer span')).toHaveText('O');
  }finally{await f.dispose();}
 });
-test('letter grades are matchable on subject pages reached from the grade averages view',async()=>{
+test('subject result details reached from grade averages stay native and have no opening or replay control',async()=>{
  const student='subject-letter-student',letter={...raw,formattedResultaat:'V',isCijfer:false,isLabel:true};
  const subjectCard=card.replace('sl-laatste-resultaat-item','sl-vakresultaat-item').replace('<div class="titel">Wiskunde A</div>','<div class="titel">Hoofdstuk 3</div>').replace('4 okt · Hoofdstuk 3','4 okt').replaceAll('8,3','V');
  const endpoint=`/rest/v1/geldendvoortgangsdossierresultaten/vakresultaten/${student}/vak/fixture-subject/lichting/fixture-cohort`;
  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:letter,card:subjectCard,subject:true,endpoint});try{
-  await f.page.evaluate(()=>history.replaceState({},'','/cijfers/vakresultaten?vak=subject&lichting=cohort&plaatsing=placement&vaknaam=bedrijfseconomie'));
-  await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.po-safe-native')).toHaveAttribute('data-po-link-problem','matched');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
-  await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');await expect.poll(async()=> (await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState)).collection.length,{timeout:12000}).toBe(1);
-  const state=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState);expect(state.collection[0]).toMatchObject({value:'V',grade:null,subject:'Wiskunde A'});
+  await f.page.evaluate(()=>{history.replaceState({},'','/cijfers/vakresultaten?vak=subject&lichting=cohort&plaatsing=placement&vaknaam=bedrijfseconomie');window.dispatchEvent(new PopStateEvent('popstate'));});
+  await expect(f.page.locator('html')).toHaveAttribute('data-po-route-excluded','true');await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.po-safe-native,.po-experience-host')).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Cijfer opnieuw openen'})).toHaveCount(0);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('V');
  }finally{await f.dispose();}
 });
 
-test('another learner on a fresh install can open a subject exam grade with different decimal and weight notation',async()=>{
+test('subject exam details stay native without pack controls',async()=>{
  const type='resultaten.RGeldendExamendossierResultaat',student='another-fixture-student';
  const different={...raw,$type:type,links:[{rel:'self',id:9876543210123,type}],formattedResultaat:'6.75',omschrijving:'',weging:1,datumInvoerEerstePoging:'2026-09-29T10:00:00+02:00',additionalObjects:{vaknaam:'Engels',vakuuid:'other-fixture-subject',resultaatkolom:{type:'school-specific-column'}}};
  const otherCard=card.replaceAll('sl-laatste-resultaat-item','sl-vakresultaat-item').replaceAll('Wiskunde A','Engels').replaceAll('8,3','6,75').replaceAll('4 okt · Hoofdstuk 3','29 sep.').replaceAll('2x','1,0 ×');
  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw:different,card:otherCard,subject:true,exam:true});
  try{
-  await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.cijfer')).toHaveText('?');await expect(f.page.getByRole('button',{name:'Open cijfer'})).toBeVisible();
-  await f.page.locator('.po-safe-native').hover();await f.page.getByRole('button',{name:'Open cijfer'}).click();const cdp=await f.context.newCDPSession(f.page);await clickAXButton(cdp,'Open Cijfer');
-  await expect.poll(async()=> (await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState)).collection.length,{timeout:12000}).toBe(1);
-  const saved=await f.worker.evaluate(async()=> (await chrome.storage.local.get('poState')).poState);
-  expect(saved.collection[0]).toMatchObject({value:'6.75',grade:6.75,subject:'Engels',scope:hash(saved.salt,'account',student)});
-  expect(saved.collection[0].key).toBe(hash(saved.salt,hash(saved.salt,'account',student),'exam','9876543210123'));
+  await f.page.evaluate(()=>{history.replaceState({},'','/cijfers/vakresultaten?vak=subject&lichting=cohort&plaatsing=placement&vaknaam=engels');window.dispatchEvent(new PopStateEvent('popstate'));});
+  await expect(f.page.locator('html')).toHaveAttribute('data-po-route-excluded','true');await expect(f.page.locator('sl-vakresultaat-item')).toBeVisible();await expect(f.page.locator('.po-safe-native,.po-experience-host')).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Cijfer opnieuw openen'})).toHaveCount(0);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('6,75');
  }finally{await f.dispose();}
 });
 
@@ -330,10 +324,10 @@ for(const [label,days,marker] of [['Vandaag',0],['Gisteren',1],['1 okt',null],['
  });
 }
 
-test('real progression subject endpoint and test-title card work without a recent feed',async()=>{
+test('subject result cards stay native and do not expose pack opening controls',async()=>{
  const student='subject-only-student',c=card.replaceAll('sl-laatste-resultaat-item','sl-vakresultaat-item').replaceAll('<div class="titel">Wiskunde A</div>','<div class="titel">Hoofdstuk 3</div>').replaceAll('4 okt · Hoofdstuk 3','4 okt');
  const f=await launch(false,process.env.PO_TEST_BUILD??'dist',false,{student,raw,card:c,subject:true,endpoint:`/rest/v1/geldendvoortgangsdossierresultaten/vakresultaten/${student}/vak/fixture-subject/lichting/fixture-cohort`});
- try{await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(1);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('?');}finally{await f.dispose();}
+ try{await f.page.evaluate(()=>{history.replaceState({},'','/cijfers/vakresultaten?vak=subject&lichting=cohort&plaatsing=placement&vaknaam=wiskunde');window.dispatchEvent(new PopStateEvent('popstate'));});await expect(f.page.locator('html')).toHaveAttribute('data-po-route-excluded','true');await expect(f.page.locator('.po-safe-native')).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Open cijfer'})).toHaveCount(0);await expect(f.page.getByRole('button',{name:'Cijfer opnieuw openen'})).toHaveCount(0);await expect(f.page.locator('sl-vakresultaat-item .cijfer')).toHaveText('8,3');}finally{await f.dispose();}
 });
 
 test('a scoped overview can supply a fresh account when the recent result feed is missing',async()=>{

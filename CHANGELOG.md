@@ -5,6 +5,7 @@
 - De cijferrol draait soepeler en landt op verschillende manieren.
 - Het echte cijfer eindigt altijd midden op de kaart.
 - Het originele geluid is terug. Het einde volgt de landing.
+- Vakresultaten hebben geen pack-openingknop of heropenpijl meer.
 
 ## Versie 0.2.5
 

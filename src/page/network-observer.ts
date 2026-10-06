@@ -4,7 +4,7 @@ import {digest} from '../somtoday/identity';
 import type {Observation} from '../somtoday/types';
 let salt:string|null=null;
 const pending:(()=>void)[]=[];
-const excludedRoute=()=>/^\/cijfers\/vakgemiddelden(?:\/|$)/i.test(location.pathname);
+const excludedRoute=()=>/^\/cijfers\/(?:vakgemiddelden|vakresultaten)(?:\/|$)/i.test(location.pathname);
 let disabled=excludedRoute(),hooksInstalled=false;
 const originalFetch=window.fetch;
 const originalOpen=XMLHttpRequest.prototype.open;

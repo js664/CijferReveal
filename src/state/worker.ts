@@ -13,7 +13,7 @@ let updateResponse:{update:boolean;version:string|null;url:string|null}|null=nul
 chrome.runtime.onMessage.addListener((message,sender,reply)=>{
  if(message?.protocol!=='po/check-update')return;
  const page=sender.url;
- if(!page?.startsWith('https://leerling.somtoday.nl/cijfers')||/^https:\/\/leerling\.somtoday\.nl\/cijfers\/vakgemiddelden(?:\/|\?|$)/i.test(page))return;
+ if(!page?.startsWith('https://leerling.somtoday.nl/cijfers')||/^https:\/\/leerling\.somtoday\.nl\/cijfers\/(?:vakgemiddelden|vakresultaten)(?:\/|\?|$)/i.test(page))return;
  const respond=async()=>{
   if(Date.now()-updateCheckedAt<60*60*1000&&updateResponse){reply(updateResponse);return;}
   try{

@@ -13,6 +13,6 @@ test('provider chooser expands over the blurred button with keyboard and mobile 
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'test-results/website/download-mobile.png'});
  const box=await page.locator('.download-options').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(390);
  await expect(som).toHaveAttribute('href',/CijferReveal\.zip$/);await expect(magister).toHaveAttribute('href',/CijferReveal-Magister\.zip$/);
- await magister.click();await expect(page.getByRole('dialog',{name:'Magister — voorlopige versie'})).toBeVisible();await expect(page.getByRole('link',{name:'Toch downloaden'})).toHaveAttribute('href',/magister-v.*CijferReveal-Magister.zip$/);await page.getByRole('button',{name:'Annuleren'}).click();await expect(trigger).toBeFocused();
+ await magister.click();await expect(page.getByRole('dialog',{name:'Magister — voorlopige versie'})).toBeVisible();await expect(page.getByRole('link',{name:'Toch downloaden'})).toHaveAttribute('href',/releases\/latest\/download\/CijferReveal-Magister.zip$/);await page.getByRole('button',{name:'Annuleren'}).click();await expect(trigger).toBeFocused();
  await page.emulateMedia({reducedMotion:'reduce'});await page.keyboard.press('Escape');await trigger.click();await expect(som).toBeVisible();
 });

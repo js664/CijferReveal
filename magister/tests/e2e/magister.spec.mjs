@@ -84,11 +84,11 @@ test('shows the Magister update notice for a verified provider release',async()=
  const context=await chromium.launchPersistentContext(directory,{channel:'chromium',headless:true,args:[`--disable-extensions-except=${resolve('dist')}`,`--load-extension=${resolve('dist')}`]});
  try{
   const worker=context.serviceWorkers()[0]??await context.waitForEvent('serviceworker');
-  await worker.evaluate(payload=>{globalThis.fetch=async url=>new Response(JSON.stringify(String(url).startsWith('https://api.github.com/')?[{tag_name:'magister-v0.2.9',html_url:'https://github.com/js664/CijferReveal/releases/tag/magister-v0.2.9',draft:false,prerelease:false,assets:[{name:'CijferReveal-Magister.zip',browser_download_url:'https://github.com/js664/CijferReveal/releases/download/magister-v0.2.9/CijferReveal-Magister.zip'}]}]:payload),{status:200});},fixture);
+  await worker.evaluate(payload=>{globalThis.fetch=async url=>new Response(JSON.stringify(String(url).startsWith('https://api.github.com/')?{tag_name:'v0.2.9',html_url:'https://github.com/js664/CijferReveal/releases/tag/v0.2.9',draft:false,prerelease:false,assets:[{name:'CijferReveal-Magister.zip',browser_download_url:'https://github.com/js664/CijferReveal/releases/download/v0.2.9/CijferReveal-Magister.zip'}]}:payload),{status:200});},fixture);
   await context.route('https://school.magister.net/**',route=>route.fulfill({status:200,contentType:route.request().url().includes('/api/')?'application/json':'text/html',body:route.request().url().includes('/api/')?JSON.stringify(fixture):html}));
   const page=await context.newPage();await page.goto('https://school.magister.net/#/cijfers');const cdp=await context.newCDPSession(page);
   await expect.poll(async()=>(await ax(cdp)).some(node=>node.role?.value==='link'&&node.name?.value==='Update bekijken')).toBe(true);
 
-  const cache=await worker.evaluate(async()=> (await chrome.storage.local.get('poMagisterUpdateCache')).poMagisterUpdateCache);expect(cache.release.tag_name).toBe('magister-v0.2.9');
+  const cache=await worker.evaluate(async()=> (await chrome.storage.local.get('poMagisterUpdateCache')).poMagisterUpdateCache);expect(cache.release.tag_name).toBe('v0.2.9');
  }finally{await context.close();}
 });

@@ -7,7 +7,7 @@ it('offers two provider downloads behind an accessible chooser',()=>{
  expect(trigger.tagName).toBe('BUTTON');expect(trigger.getAttribute('aria-expanded')).toBe('false');expect(trigger.getAttribute('aria-controls')).toBe('download-options');
  const options=[...page.querySelectorAll('.provider-option')];
  expect(options.map(link=>link.textContent?.trim())).toEqual(['SOMtoday','MagisterVoorlopige versie']);
- expect(options.map(link=>link.getAttribute('href'))).toEqual(['https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip','https://github.com/js664/CijferReveal/releases/download/magister-v__EXTENSION_VERSION__/CijferReveal-Magister.zip']);
+ expect(options.map(link=>link.getAttribute('href'))).toEqual(['https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip','https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal-Magister.zip']);
  expect(page.querySelector('#download-options')?.hasAttribute('inert')).toBe(true);expect(html).toContain('__EXTENSION_VERSION__');expect(html).not.toContain('api.github.com');
  expect(page.querySelector('script[src="download.js"]')).toBeTruthy();expect(page.querySelector('noscript')?.textContent).toContain('Download Magister');
 });

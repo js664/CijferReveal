@@ -27,4 +27,4 @@ Login- en callbackschermen blijven volledig native. Het cijferpaneel start allee
 
 ## Voorlopige versie en updates
 
-Magister wordt als normale GitHub-release gepubliceerd. Alleen de website waarschuwt voor de download dat deze versie nog in ontwikkeling is. Na inloggen controleert de updatechecker maximaal eens per uur op nieuwe Magister-releases, alleen normale releases. Er gaan geen schoolcredentials of cijfergegevens naar GitHub. Het updatebericht opent de releasepagina; er wordt niets automatisch geïnstalleerd.
+Magister staat samen met SOMtoday in één normale GitHub-release. Alleen de website waarschuwt voor de download dat deze versie nog in ontwikkeling is. Na inloggen controleert de updatechecker maximaal eens per uur op nieuwe gezamenlijke releases, alleen normale releases. Er gaan geen schoolcredentials of cijfergegevens naar GitHub. Het updatebericht opent de releasepagina; er wordt niets automatisch geïnstalleerd.

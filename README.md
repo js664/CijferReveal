@@ -79,10 +79,10 @@ Om de tijdelijke build op Firefox voor computer te laden, open `about:debugging#
 
 ## Magister
 
-De Magister-versie heeft een eigen extensie en inventaris. De website waarschuwt voor mogelijke bugs voordat je downloadt; GitHub toont een normale release. Ze toont maximaal 25 recente cijfers in een apart paneel op Cijfers. Dezelfde pack opening ondersteunt cijfers, letters en niveau-aanduidingen. De jaaroverzichten, gemiddelden en home-widgets vallen buiten deze versie.
+De Magister-versie heeft een eigen extensie en inventaris. De website waarschuwt voor mogelijke bugs voordat je downloadt; GitHub toont één gezamenlijke normale release met twee ZIP-bestanden. Ze toont maximaal 25 recente cijfers in een apart paneel op Cijfers. Dezelfde pack opening ondersteunt cijfers, letters en niveau-aanduidingen. De jaaroverzichten, gemiddelden en home-widgets vallen buiten deze versie.
 
 De leesbare Magister-broncode staat in magister/. Bouw daar met npm ci en npm run build. Diagnostiek verzamelt lokaal technische gebeurtenissen zonder tokens of cijferwaarden. Het paneel is standaard verborgen; voer in de console van Magister window['enable-magister-debug']() uit om het te tonen en window['disable-magister-debug']() om het te verbergen. Download logs (.txt) om een probleem te onderzoeken.
 
 ## Releases publiceren
 
-Maak voor een volgende gezamenlijke release beide tags op exact dezelfde gecontroleerde commit: vX.Y.Z en magister-vX.Y.Z. Push beide bestaande tags met een account dat tags mag aanmaken. De releaseworkflow controleert hun commit en publiceert twee normale releases; hij hoeft zelf geen beschermde tag aan te maken. SOMtoday blijft de nieuwste standaardrelease voor de bestaande updatechecker.
+Maak één tag vX.Y.Z op de gecontroleerde releasecommit. De workflow publiceert CijferReveal.zip voor SOMtoday en CijferReveal-Magister.zip samen in dezelfde normale GitHub-release. Beide updatecheckers gebruiken releases/latest.

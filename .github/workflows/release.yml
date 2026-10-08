@@ -28,7 +28,6 @@ jobs:
           [[ "$GITHUB_REF_NAME" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git rev-parse "$GITHUB_REF^{commit}")" = "$GITHUB_SHA"
-          test "$(git rev-parse "refs/tags/magister-$GITHUB_REF_NAME^{commit}")" = "$GITHUB_SHA"
           node --input-type=module -e 'import {readFileSync} from "node:fs"; const m=JSON.parse(readFileSync("manifest.json","utf8")); if (`v${m.version}` !== process.env.GITHUB_REF_NAME) process.exit(1)'
       - name: Installeer vaste dependencies
         run: npm ci
@@ -67,8 +66,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if ! gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal.zip#CijferReveal.zip" --title "CijferReveal ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/cijferreveal-release/release-notes.md" --verify-tag --latest
-          fi
-          if ! gh release view "magister-$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release create "magister-$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal-Magister.zip#CijferReveal-Magister.zip" --title "Magister ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/cijferreveal-release/magister-notes.md" --verify-tag --latest=false
+            gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal.zip#CijferReveal.zip" "$RUNNER_TEMP/cijferreveal-release/CijferReveal-Magister.zip#CijferReveal-Magister.zip" --title "CijferReveal ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/cijferreveal-release/release-notes.md" --verify-tag --latest
+          else
+            gh release upload "$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal.zip" "$RUNNER_TEMP/cijferreveal-release/CijferReveal-Magister.zip" --clobber
           fi

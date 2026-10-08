@@ -2,7 +2,7 @@
 
 ## Versie 0.2.8 — 8 oktober 2026
 
-- Nieuwe Magister-extensie: open maximaal 25 recente cijfers met dezelfde animatie, geluiden en lokale inventaris. Magister verschijnt als aparte normale GitHub-release. De website waarschuwt voor mogelijke bugs voordat je Magister downloadt. SOMtoday blijft de stabiele CijferReveal.zip.
+- Nieuwe Magister-extensie: open maximaal 25 recente cijfers met dezelfde animatie, geluiden en lokale inventaris. Beide ZIP-bestanden staan samen in één normale GitHub-release. De website waarschuwt voor mogelijke bugs voordat je Magister downloadt. SOMtoday blijft de stabiele CijferReveal.zip.
 - Beide versies ondersteunen cijferrollen voor herkenbare beoordelings- en niveau-aanduidingen, waaronder ZG, RV en BB/KB/TL/HV/A. Bij een onduidelijke schaal blijft de rol algemeen; het echte resultaat verandert nooit.
 - De website laat SOMtoday en Magister kiezen vanuit de downloadknop, met een vloeiende overgang, vervaagde achtergrond, toetsenbordbediening en ondersteuning voor minder beweging.
 - Magister-debuglogs zijn standaard verborgen. Toon ze met window['enable-magister-debug']() in de console en download technische logs als TXT zonder credentials of cijferwaarden.

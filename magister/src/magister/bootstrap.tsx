@@ -22,7 +22,7 @@ const nativeSelector=nativeGradeSelector;
 let host:HTMLElement|null=null,root:ReturnType<typeof createRoot>|null=null;
 let error='',loading=false,reloadPending=false,disposed=false,generation=0,authenticated=false,hadGradeView=false;
 let availableUpdate:MagisterUpdate|null=null,updateChecked=false;
-async function checkUpdate(){if(updateChecked||!authenticated)return;updateChecked=true;try{const result=await chrome.runtime.sendMessage({protocol:'po/check-magister-update'}) as MagisterUpdate|null;if(result?.update&&/^\d+\.\d+\.\d+$/.test(result.version)&&result.url===`https://github.com/js664/CijferReveal/releases/tag/magister-v${result.version}`){availableUpdate=result;render();}}catch(reason){debug('update.notice-failed',errorData(reason),'warn');}}
+async function checkUpdate(){if(updateChecked||!authenticated)return;updateChecked=true;try{const result=await chrome.runtime.sendMessage({protocol:'po/check-magister-update'}) as MagisterUpdate|null;if(result?.update&&/^\d+\.\d+\.\d+$/.test(result.version)&&result.url===`https://github.com/js664/CijferReveal/releases/tag/v${result.version}`){availableUpdate=result;render();}}catch(reason){debug('update.notice-failed',errorData(reason),'warn');}}
 const hidden=new Map<HTMLElement,{inert:boolean;aria:string|null}>();
 const bridge=new Bridge(render,()=>{debug('bridge.failed',{},'error');error='Lokale opslag is niet beschikbaar. Laad de pagina opnieuw.';render();},false);
 const experience=new Experience(()=>bridge.state,()=>bridge.refresh(),()=>new Set([...bridge.records.values()].filter(item=>item.scope===bridge.activeScope&&bridge.state?.records[item.key]?.version===item.version).map(item=>item.key)));

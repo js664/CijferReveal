@@ -1,3 +1,5 @@
+> Historisch document. Zie de [README](../../README.md) en [ontwikkelgids](../DEVELOPMENT.md) voor de huidige werkwijze.
+
 # Controles voor versie 0.2.4
 
 Deze versie is vóór publicatie gecontroleerd.
@@ -9,4 +11,4 @@ Deze versie is vóór publicatie gecontroleerd.
 - De installatie-ZIP bevat alleen de bestanden die de extensie nodig heeft.
 - De ZIP is hetzelfde bestand als het bestand bij de GitHub-release.
 
-De tests gebruiken voorbeeldgegevens. Ze bewijzen niet dat CijferReveal op elke school werkt. Zie de [README](README.md) voor de grenzen en hulp bij problemen.
+De tests gebruiken voorbeeldgegevens. Ze bewijzen niet dat CijferReveal op elke school werkt. Zie de [README](../../README.md) voor de grenzen en hulp bij problemen.

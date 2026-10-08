@@ -1,3 +1,5 @@
+> Historisch document. Zie de [README](../../README.md) en [ontwikkelgids](../DEVELOPMENT.md) voor de huidige werkwijze.
+
 # Over de koppeling met SOMtoday
 
 CijferReveal gebruikt de cijfergegevens die SOMtoday zelf op de pagina laadt. De extensie haalt geen cijfers op met je wachtwoord en verstuurt geen extra verzoeken.
@@ -6,4 +8,4 @@ De extensie probeert elk zichtbaar cijfer aan één resultaat te koppelen. Als e
 
 Deze koppeling kan veranderen als SOMtoday zijn website aanpast. De tests gebruiken voorbeeldgegevens en controleren niet elke school of account. Meld problemen via [GitHub Issues](https://github.com/js664/CijferReveal/issues), zonder privégegevens mee te sturen.
 
-Voor de huidige werking en bekende grenzen, zie de [README](README.md).
+Voor de huidige werking en bekende grenzen, zie de [README](../../README.md).

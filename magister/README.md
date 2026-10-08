@@ -1,30 +1,33 @@
 # CijferReveal voor Magister
 
-Magister-versie van CijferReveal 0.2.8. Download CijferReveal-Magister.zip via https://js664.github.io/CijferReveal/. Pak uit en laad de map via Ontwikkelaarsmodus / Uitgepakte extensie laden in Chrome of Edge. Open daarna Cijfers in je schoolomgeving en herlaad indien nodig.
+Dit is het zelfstandige Magister-project binnen [CijferReveal](../README.md). Download CijferReveal-Magister.zip via [de website](https://js664.github.io/CijferReveal/) of de gezamenlijke GitHub-release.
 
-Deze versie heeft dezelfde pack-openinganimatie, geluiden en resultaatfamilies als SOMtoday. De extensie toont maximaal 25 recente cijfers in een eigen paneel; lokale inventaris en replay zijn inbegrepen. Jaaroverzichten, gemiddelden en home-widgets zijn niet aangepast.
+Het paneel toont maximaal 25 recente cijfers. Openingen, geluid, resultaatfamilies, lokale inventaris en replay zijn inbegrepen. Jaaroverzichten, gemiddelden en home-widgets zijn niet aangepast. Login- en callbackschermen blijven native; het paneel start pas na een geslaagde eigen Magister-cijferaanvraag.
 
-Authorization wordt alleen tijdelijk per tabblad in het achtergrondgeheugen gehouden. Lokale migratiebeveiligingen blijven behouden. Zie ../PRIVACY.md voor details.
+## Zelf bouwen
 
-## Diagnostiek
+Installeer Node.js 22.12 of nieuwer. Vanuit deze magister-map:
 
-Het paneel is standaard verborgen; technische gebeurtenissen blijven lokaal bewaard (laatste 1500). Voer window['enable-magister-debug']() in de Magister-browserconsole uit om het paneel te tonen. Met window['disable-magister-debug']() verberg je het. Download logs (.txt) exporteert pagina- en achtergrondgebeurtenissen zonder tokens, leerling-ID's, cijferwaarden of ruwe API-antwoorden. Alleen jij kunt het TXT-bestand delen. Na herladen is het paneel weer verborgen.
-
-## Bouwen en controleren
-
+~~~sh
 npm ci
 npm run typecheck
+npm run lint
 npm test
 npm run build
 npm run validate
+~~~
+
+Laad dist/ als uitgepakte extensie. De ZIP heet pack-opening-voor-magister.zip. Voor de browsertests:
+
+~~~sh
+npx playwright install chromium
 npm run test:e2e
+~~~
 
-Firefox kan met npm run build:firefox gebouwd worden; de ongetekende ZIP is bedoeld voor tijdelijke developer-installatie.
+Je kunt ook de hoofdmapcommando's uit de [README](../README.md#zelf-bouwen) gebruiken. Pas Magister direct in deze map aan; een externe kopie is niet nodig. Zie de [ontwikkelgids](../docs/DEVELOPMENT.md) voor Firefox, ontwikkelbuilds en releases.
 
-## Loginbeveiliging
+## Diagnostiek en updates
 
-Login- en callbackschermen blijven volledig native. Het cijferpaneel start alleen op een bekende cijfercontainer na een geslaagde cijferaanvraag van Magister zelf. De loginfix is gecontroleerd met een synthetische login-, SPA- en uitlogtest; controle van de echte school-SSO blijft noodzakelijk voor publicatie.
+Het debugpaneel is standaard verborgen. Toon het in de Magister-browserconsole met window['enable-magister-debug']() en verberg het met window['disable-magister-debug'](). Download logs (.txt) exporteert de laatste 1500 lokale technische gebeurtenissen zonder tokens, leerling-ID's of cijferwaarden. Logs blijven na herladen bewaard; het paneel is dan weer verborgen.
 
-## Voorlopige versie en updates
-
-Magister staat samen met SOMtoday in één normale GitHub-release. Alleen de website waarschuwt voor de download dat deze versie nog in ontwikkeling is. Na inloggen controleert de updatechecker maximaal eens per uur op nieuwe gezamenlijke releases, alleen normale releases. Er gaan geen schoolcredentials of cijfergegevens naar GitHub. Het updatebericht opent de releasepagina; er wordt niets automatisch geïnstalleerd.
+De updatechecker gebruikt de nieuwste gezamenlijke GitHub-release, controleert de Magister-asset en bewaart updategegevens maximaal één uur. Updates worden niet automatisch geïnstalleerd. Authorization blijft tijdelijk per tabblad in het achtergrondgeheugen en gaat niet naar GitHub. Zie [PRIVACY.md](../PRIVACY.md).

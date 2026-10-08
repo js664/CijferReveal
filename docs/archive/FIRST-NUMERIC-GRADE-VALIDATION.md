@@ -1,6 +1,8 @@
+> Historisch document. Zie de [README](../../README.md) en [ontwikkelgids](../DEVELOPMENT.md) voor de huidige werkwijze.
+
 # Hoe cijferherkenning wordt getest
 
-Dit bestand beschrijft de oude testaanpak. De huidige uitleg staat in de [README](README.md).
+Dit bestand beschrijft de oude testaanpak. De huidige uitleg staat in de [README](../../README.md).
 
 De tests gebruiken voorbeeldcijfers om te controleren of een cijfer bij de juiste vakkaart hoort. Ook wordt getest of nieuwe cijfers en cijfers met een ster goed werken. Een gemiddelde, rapportcijfer of kaart die niet duidelijk bij één resultaat hoort, blijft verborgen.
 

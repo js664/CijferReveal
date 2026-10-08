@@ -51,11 +51,3 @@ if(JSON.parse(new TextDecoder().decode(finalEntries['manifest.json'])).version!=
 await writeFile(join(resolve(outputDirectory),'release-notes.md'),`${noteText}\n`,'utf8');
 
 console.log(`Releasepakket gecontroleerd: ${tag}, alleen productiebuild.`);
-await writeFile(join(resolve(outputDirectory),'magister-notes.md'),`## CijferReveal voor Magister ${version}
-
-Nieuwe Magister-extensie met dezelfde resultaatfamilies en pack-openingervaring als SOMtoday. De loginfix is door een tester bevestigd.
-
-Download CijferReveal-Magister.zip, pak uit en laad de map als uitgepakte extensie. De versie toont maximaal 25 recente cijfers; jaaroverzichten en home-widgets zijn niet aangepast.
-
-De nieuwe resultaatfamilies, lokale inventaris, loginbeveiliging en updatechecker zijn inbegrepen. Diagnostiek is verborgen: window['enable-magister-debug']() toont het paneel. De laatste 1500 technische gebeurtenissen blijven lokaal bewaard, zonder tokens of cijferwaarden.
-`);

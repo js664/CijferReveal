@@ -18,7 +18,8 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "build:magister": "npm --prefix magister run build",
     "test:magister": "npm --prefix magister test",
-    "sync:magister": "node scripts/sync-magister.mjs"
+    "validate:magister": "npm --prefix magister run validate",
+    "test:e2e:magister": "npm --prefix magister run test:e2e"
   },
   "dependencies": {
     "border-beam": "^1.4.1",

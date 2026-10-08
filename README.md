@@ -2,87 +2,101 @@
 
 Download de nieuwste versie via [onze website](https://js664.github.io/CijferReveal/).
 
-CijferReveal geeft je SOMtoday- of Magister-cijfers één voor één vrij, met een korte animatie en geluid. Het cijfer verandert niet. Geopende cijfers staan in je inventaris.
+CijferReveal geeft je SOMtoday- of Magister-cijfers één voor één vrij met een korte animatie en geluid. Het echte resultaat verandert niet. Geopende cijfers staan in je lokale inventaris. Beide ZIPs staan in [dezelfde GitHub-release](https://github.com/js664/CijferReveal/releases/latest).
 
 ## Installeren
 
-Dit werkt op een computer met Chrome, Edge, Brave of Helium. Je hoeft niet te kunnen programmeren.
+Dit werkt op een computer met Chrome, Edge, Brave of Helium.
 
-1. Kies **SOMtoday** (CijferReveal.zip) of **Magister** (CijferReveal-Magister.zip) via [onze website](https://js664.github.io/CijferReveal/).
+1. Kies **SOMtoday** (CijferReveal.zip) of **Magister** (CijferReveal-Magister.zip) op de website. Voor Magister verschijnt eerst een waarschuwing voor mogelijke bugs.
 2. Pak de ZIP uit en laat de map staan.
-3. Open de extensiepagina van je browser:
-   - Chrome: `chrome://extensions`
-   - Edge: `edge://extensions`
-   - Brave: `brave://extensions`
-   - Helium: `helium://extensions` (werkt dat niet, probeer `chrome://extensions`)
+3. Open chrome://extensions, edge://extensions, brave://extensions of helium://extensions.
 4. Zet **Ontwikkelaarsmodus** aan.
-5. Klik op **Uitgepakte extensie laden** en kies de uitgepakte map.
+5. Klik op **Uitgepakte extensie laden** en kies de uitgepakte map met manifest.json.
 6. Herlaad SOMtoday of Magister en open **Cijfers**.
 
-Firefox-versie volgt later.
+Firefox-builds zijn beschikbaar voor tijdelijke developer-installatie; zie de [ontwikkelgids](docs/DEVELOPMENT.md#firefox).
 
 ## Cijfers openen
 
-- Klik bij een nieuw cijfer op **Open cijfer**.
-- Druk op Enter om de animatie te starten of naar het volgende cijfer te gaan.
+- Klik bij een nieuw resultaat op **Open cijfer**.
+- Druk op Enter om de animatie te starten of naar het volgende resultaat te gaan.
 - Druk op Escape om het scherm te sluiten.
-- Ook letters en `*` worden getoond.
-- In **Inventaris** staan de cijfers die je hebt geopend.
-- Klik op het extensie-icoon om **Reset extensie** te gebruiken. Dit wist je inventaris en laat je cijfers opnieuw openen.
+- Ook letters, niveau-aanduidingen en sterren worden getoond; de animatie eindigt op het oorspronkelijke resultaat.
+- De inventaris bevat de resultaten die je hebt geopend.
+- Via het extensie-icoon kun je **Reset extensie** gebruiken. Dit wist de inventaris en laat je resultaten opnieuw openen.
+
+SOMtoday en Magister hebben afzonderlijke extensies en inventarissen. Magister toont maximaal 25 recente resultaten in een eigen paneel. Jaaroverzichten, gemiddelden en home-widgets zijn niet aangepast.
 
 ## Geen knop om te openen?
 
-1. Controleer of CijferReveal aan staat en toegang tot SOMtoday heeft.
-2. Herlaad eerst de extensie en daarna SOMtoday.
-3. Open **Cijfers → Laatste cijfers**.
-4. Staat er **Cijfer nog niet gekoppeld**? Klik op **Pagina opnieuw laden**.
-5. Werkt het nog niet? Meld je browser, versienummer en wat je ziet bij [Issues](https://github.com/js664/CijferReveal/issues). Deel daar geen wachtwoorden, cookies, tokens of leerlingnummers.
+1. Controleer of de juiste extensie aan staat en toegang tot je schoolomgeving heeft.
+2. Herlaad de extensie op de extensiepagina en daarna de schoolwebsite.
+3. Open **Cijfers**; in SOMtoday kies je **Laatste cijfers**.
+4. Gebruik de herlaadknop als een cijfer niet gekoppeld is. Magister moet eerst zelf een geslaagde cijferaanvraag uitvoeren voordat het paneel verschijnt.
+5. Meld je browser, versienummer en wat je ziet bij [Issues](https://github.com/js664/CijferReveal/issues). Deel geen wachtwoorden, cookies, tokens of leerlingnummers.
 
-Nieuwe of gewijzigde cijfers worden opnieuw herkend. Verandert een `*` later in een cijfer, dan kun je dat cijfer ook openen. Bij twijfel blijft een cijfer verborgen.
+Voor Magister kun je het verborgen debugpaneel tonen via de browserconsole:
+
+~~~js
+window['enable-magister-debug']()
+~~~
+
+Met window['disable-magister-debug']() verberg je het. **Download logs (.txt)** exporteert de laatste 1500 lokale technische gebeurtenissen, zonder credentials, leerling-ID's of cijferwaarden. De logs blijven na herladen bewaard; het paneel wordt weer verborgen.
 
 ## Bijwerken
 
-Download de nieuwste versie en pak die uit over de bestaande map. Klik op het herlaadicoon naast CijferReveal op de extensiepagina en herlaad SOMtoday. Verwijder de extensie niet; dan kan je inventaris verdwijnen.
-
-## Privacy
-
-Je cijfers en instellingen blijven op je apparaat. CijferReveal stuurt ze niet naar de maker. De extensie gebruikt cijfergegevens die SOMtoday al aan je browser heeft geleverd. Lees meer op de [privacy-pagina](https://js664.github.io/CijferReveal/privacy.html).
-
-## Licentie
-
-De broncode valt onder de [PolyForm Noncommercial 1.0.0-licentie](LICENSE). Je mag CijferReveal gebruiken, aanpassen en delen voor niet-commerciële doelen, als je de licentie volgt. Commercieel gebruik of geld verdienen ermee mag alleen met toestemming van js664.
-
-Deel je een kopie of aangepaste versie? Voeg dan het LICENSE-bestand toe en vermeld js664 met een link naar dit project. De precieze regels staan in de licentie.
-
-CijferReveal is een onafhankelijk project. SOMtoday en Magister maken of controleren de extensie niet. Scholen kunnen extensies blokkeren. De werking kan veranderen als SOMtoday wordt aangepast.
+Pak de nieuwste ZIP uit over de bestaande map. Herlaad de extensie op de extensiepagina en daarna de schoolwebsite. Verwijder de extensie niet; dan kan je inventaris verdwijnen. Beide versies controleren GitHub op nieuwe releases en tonen een updatebericht. Ze installeren geen updates automatisch.
 
 ## Zelf bouwen
 
-Dit is alleen nodig als je de code wilt aanpassen. Installeer [Node.js](https://nodejs.org/) versie 22.12 of nieuwer. Open een terminal in de projectmap en voer uit:
+Installeer Node.js **22.12 of nieuwer** en Git. Haal de broncode op en installeer de vaste dependencies voor beide projecten:
 
-```sh
+~~~sh
+git clone https://github.com/js664/CijferReveal.git
+cd CijferReveal
 npm ci
+npm --prefix magister ci
+~~~
+
+Bouw vanuit de hoofdmap:
+
+~~~sh
 npm run build
-```
+npm run build:magister
+~~~
 
-De extensie staat daarna in de map `dist`. Laad die via **Uitgepakte extensie laden**.
+| Extensie | Map om uitgepakt te laden | Lokale ZIP |
+| --- | --- | --- |
+| SOMtoday | dist/ | pack-opening-voor-somtoday.zip |
+| Magister | magister/dist/ | magister/pack-opening-voor-magister.zip |
 
-### Firefox-build controleren
+Laad de gewenste map via **Uitgepakte extensie laden**. Alleen SOMtoday bouwen? Dan kun je de installatie en build van Magister overslaan.
 
-De Firefox-versie wordt gebouwd uit de leesbare bronbestanden. De build maakt daaruit de bestanden voor Firefox.
+Controleer beide pakketten:
 
-1. Installeer Node.js 22.12 of nieuwer op Windows, macOS of Linux.
-2. Open een terminal in de projectmap en voer `npm ci` uit. Dit installeert de vastgelegde onderdelen; internet is daarvoor nodig.
-3. Voer `npm run build:firefox` uit. De map `dist-firefox` en het bestand `CijferReveal-Firefox.zip` worden gemaakt.
+~~~sh
+npm run validate
+npm run validate:magister
+~~~
 
-Om de tijdelijke build op Firefox voor computer te laden, open `about:debugging#/runtime/this-firefox`, klik op **Tijdelijke add-on laden…** en kies `dist-firefox/manifest.json`.
+Voor tests, ontwikkelbuilds, Firefox en publicatie: [ontwikkelgids](docs/DEVELOPMENT.md).
 
-## Magister
+## Projectindeling
 
-De Magister-versie heeft een eigen extensie en inventaris. De website waarschuwt voor mogelijke bugs voordat je downloadt; GitHub toont één gezamenlijke normale release met twee ZIP-bestanden. Ze toont maximaal 25 recente cijfers in een apart paneel op Cijfers. Dezelfde pack opening ondersteunt cijfers, letters en niveau-aanduidingen. De jaaroverzichten, gemiddelden en home-widgets vallen buiten deze versie.
+| Pad | Inhoud |
+| --- | --- |
+| src/, tests/, assets/ | SOMtoday-broncode, tests en gebruikte assets |
+| magister/ | Zelfstandig Magister-project; pas de code hier direct aan |
+| scripts/ | Build-, validatie- en releasehulpmiddelen |
+| website/ | GitHub Pages-downloadpagina |
+| docs/ | Ontwikkelgids en historische documentatie |
+| .github/workflows/ | Automatische controles, gezamenlijke releases en websitepublicatie |
 
-De leesbare Magister-broncode staat in magister/. Bouw daar met npm ci en npm run build. Diagnostiek verzamelt lokaal technische gebeurtenissen zonder tokens of cijferwaarden. Het paneel is standaard verborgen; voer in de console van Magister window['enable-magister-debug']() uit om het te tonen en window['disable-magister-debug']() om het te verbergen. Download logs (.txt) om een probleem te onderzoeken.
+## Privacy en licentie
 
-## Releases publiceren
+Cijfers en instellingen blijven op je apparaat en worden niet naar de maker gestuurd. SOMtoday gebruikt antwoorden die de schoolwebsite zelf ophaalt. Magister vraagt recente cijfers op bij je eigen schoolomgeving met een tijdelijk in het geheugen gehouden Authorization-header. Lees de [privacyverklaring](PRIVACY.md).
 
-Maak één tag vX.Y.Z op de gecontroleerde releasecommit. De workflow publiceert CijferReveal.zip voor SOMtoday en CijferReveal-Magister.zip samen in dezelfde normale GitHub-release. Beide updatecheckers gebruiken releases/latest.
+De broncode valt onder de [PolyForm Noncommercial 1.0.0-licentie](LICENSE). Je mag gebruiken, aanpassen en delen voor niet-commerciële doelen volgens die licentie. Commercieel gebruik vereist toestemming van js664. Voeg bij delen de licentie en bronvermelding toe; behoud ook de [notices](THIRD_PARTY_NOTICES.txt).
+
+CijferReveal is onafhankelijk van SOMtoday en Magister. Scholen kunnen extensies blokkeren; wijzigingen aan de schoolwebsite kunnen aanpassingen vereisen. Zie [CHANGELOG.md](CHANGELOG.md) voor wijzigingen.

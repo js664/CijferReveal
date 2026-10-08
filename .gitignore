@@ -28,3 +28,11 @@ assets/reveal-impact.mp3
 assets/inventory-music*
 SHA256SUMS.txt
 dist-snapshot-*/
+
+release-packages/
+magister/verification/
+magister/assets/*.wav
+magister/assets/opening-start.mp3
+magister/assets/reel-tick.mp3
+magister/assets/reveal-impact.mp3
+magister/assets/inventory-music*

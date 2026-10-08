@@ -1,0 +1,26 @@
+:host { display:block; width:100%; min-width:0; color:#182332; background:#fff; font:14px/1.5 "Open Sans", "Segoe UI", sans-serif; color-scheme:light; }
+* { box-sizing:border-box; }
+.panel { padding:24px; }
+header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:24px; }
+h1 { font-size:24px; line-height:1.2; margin:0 0 8px; font-weight:650; }
+p { margin:0; max-width:70ch; }
+.muted, time { color:#4b5a6c; }
+nav { display:flex; flex-wrap:wrap; gap:8px; }
+button { border:1px solid #bac5d1; border-radius:6px; padding:9px 14px; font:inherit; font-weight:600; color:#182332; background:#fff; cursor:pointer; }
+button:hover { background:#edf3fa; }
+button.primary, button[aria-pressed="true"] { background:#174f86; color:#fff; border-color:#174f86; }
+button.primary:hover { background:#113e6a; }
+button:disabled { opacity:.6; cursor:wait; }
+button:focus-visible { outline:3px solid #174f86; outline-offset:3px; }
+button:active { transform:translateY(1px); }
+ul { list-style:none; padding:0; margin:0; }
+li { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:16px; padding:18px 0; border-bottom:1px solid #d5dde6; }
+strong { display:block; font-size:16px; }
+.description { overflow-wrap:anywhere; }
+.result { display:flex; align-items:center; gap:16px; font-variant-numeric:tabular-nums; }
+.value { font-size:24px; font-weight:650; }
+.status { padding:24px 0; }
+::selection { color:#fff; background:#174f86; }
+@media(max-width:520px) { .panel{padding:16px;} li{grid-template-columns:1fr;} .result{justify-content:space-between;} h1{font-size:22px;} }
+
+.prerelease-note{padding:12px 0;margin-bottom:16px;border-bottom:1px solid #d5dde6;color:#4b5a6c}.prerelease-note strong{font-size:14px;color:#182332}.update-notice{display:flex;gap:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding:12px;background:#edf3fa}.update-notice a{color:#174f86;text-underline-offset:3px}.update-notice a:focus-visible{outline:3px solid #174f86;outline-offset:3px}

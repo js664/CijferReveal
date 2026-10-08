@@ -1,41 +1,17 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
-
-const page=new DOMParser().parseFromString(readFileSync('website/index.html','utf8'),'text/html');
-
-it('puts the permanent latest ZIP download first and keeps the other actions in the requested order',()=>{
- const actions=[...page.querySelectorAll('main > a, main > button')];
- expect(actions.map(node=>node.textContent?.replace(/\s+/g,' ').trim())).toEqual([
-  'Download de nieuwste versie v__EXTENSION_VERSION__',
-  'Chrome Web Store — Binnenkort',
-  'Firefox — Binnenkort',
-  'Bekijk broncode op GitHub',
-  'Veelgestelde vragen'
- ]);
- expect(actions[0].tagName).toBe('A');
- expect(actions[0].getAttribute('href')).toBe('https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip');
- expect(actions[1].tagName).toBe('BUTTON');
- expect((actions[1] as HTMLButtonElement).disabled).toBe(true);
- expect(actions[2].tagName).toBe('BUTTON');
- expect((actions[2] as HTMLButtonElement).disabled).toBe(true);
- expect(actions[3].getAttribute('href')).toBe('https://github.com/js664/CijferReveal');
- expect(actions[3].getAttribute('target')).toBe('_blank');
- expect(actions[3].getAttribute('rel')).toContain('noopener');
- expect(actions[4].getAttribute('href')).toBe('#faq');
- expect(actions[4].getAttribute('aria-controls')).toBe('faq-dialog');
- const html=readFileSync('website/index.html','utf8');
- expect(html).toContain('__EXTENSION_VERSION__');
- expect(html).not.toContain('download-note');
- expect(html).toContain("https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip");
- expect(html).not.toContain('api.github.com');
+const html=readFileSync('website/index.html','utf8');
+const page=new DOMParser().parseFromString(html,'text/html');
+it('offers two provider downloads behind an accessible chooser',()=>{
+ const trigger=page.querySelector('.download-trigger')!;
+ expect(trigger.tagName).toBe('BUTTON');expect(trigger.getAttribute('aria-expanded')).toBe('false');expect(trigger.getAttribute('aria-controls')).toBe('download-options');
+ const options=[...page.querySelectorAll('.provider-option')];
+ expect(options.map(link=>link.textContent?.trim())).toEqual(['SOMtoday','MagisterVoorlopige versie']);
+ expect(options.map(link=>link.getAttribute('href'))).toEqual(['https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip','https://github.com/js664/CijferReveal/releases/download/magister-v__EXTENSION_VERSION__/CijferReveal-Magister.zip']);
+ expect(page.querySelector('#download-options')?.hasAttribute('inert')).toBe(true);expect(html).toContain('__EXTENSION_VERSION__');expect(html).not.toContain('api.github.com');
+ expect(page.querySelector('script[src="download.js"]')).toBeTruthy();expect(page.querySelector('noscript')?.textContent).toContain('Download Magister');
 });
-
-it('includes animation help and the expected store availability in the FAQ',()=>{
- const faq=page.querySelector('#faq-dialog')!;
- expect([...faq.querySelectorAll('summary')].map(node=>node.textContent?.trim())).toEqual([
-  'Ik zie geen draaiende animatie. Wat kan ik doen?',
-  'Wanneer staat CijferReveal in de Chrome Web Store en Firefox Add-ons?'
- ]);
- expect(faq.textContent).not.toContain('Je kunt de nieuwste versie direct downloaden');
- expect(faq.textContent).not.toContain('Een kleiner scherm');
+it('preserves disabled store actions and FAQ',()=>{
+ const stores=[...page.querySelectorAll('.store-button')];expect(stores).toHaveLength(2);expect(stores.every(button=>(button as HTMLButtonElement).disabled)).toBe(true);
+ expect(page.querySelector('#faq-dialog')?.textContent).toContain('SOMtoday of Magister');expect(page.querySelector('.faq-link')?.getAttribute('aria-controls')).toBe('faq-dialog');
 });

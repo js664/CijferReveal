@@ -49,14 +49,21 @@ jobs:
         run: npm run build:dev
       - name: Browser tests
         run: npm run test:e2e
+      - name: Controleer en bouw Magister
+        working-directory: magister
+        run: |
+          npm ci
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+          npm run validate
+          npm run test:e2e
       - name: Maak en controleer releasebestanden
         run: node scripts/prepare-release.mjs "$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release"
       - name: Publiceer release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create "$GITHUB_REF_NAME"
-          "$RUNNER_TEMP/cijferreveal-release/CijferReveal.zip#CijferReveal.zip"
-          --title "CijferReveal ${GITHUB_REF_NAME#v}"
-          --notes-file "$RUNNER_TEMP/cijferreveal-release/release-notes.md"
-          --verify-tag --latest
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal.zip#CijferReveal.zip" --title "CijferReveal ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/cijferreveal-release/release-notes.md" --verify-tag --latest
+          gh release create "magister-$GITHUB_REF_NAME" "$RUNNER_TEMP/cijferreveal-release/CijferReveal-Magister.zip#CijferReveal-Magister.zip" --title "Magister ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/cijferreveal-release/magister-notes.md" --target "$GITHUB_SHA" --latest=false

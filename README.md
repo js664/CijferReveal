@@ -2,13 +2,13 @@
 
 Download de nieuwste versie via [onze website](https://js664.github.io/CijferReveal/).
 
-CijferReveal geeft je SOMtoday-cijfers één voor één vrij, met een korte animatie en geluid. Het cijfer verandert niet. Geopende cijfers staan in je inventaris.
+CijferReveal geeft je SOMtoday- of Magister-cijfers één voor één vrij, met een korte animatie en geluid. Het cijfer verandert niet. Geopende cijfers staan in je inventaris.
 
 ## Installeren
 
 Dit werkt op een computer met Chrome, Edge, Brave of Helium. Je hoeft niet te kunnen programmeren.
 
-1. Download **CijferReveal.zip** via [onze website](https://js664.github.io/CijferReveal/).
+1. Kies **SOMtoday** (CijferReveal.zip) of **Magister** (CijferReveal-Magister.zip) via [onze website](https://js664.github.io/CijferReveal/).
 2. Pak de ZIP uit en laat de map staan.
 3. Open de extensiepagina van je browser:
    - Chrome: `chrome://extensions`
@@ -17,7 +17,7 @@ Dit werkt op een computer met Chrome, Edge, Brave of Helium. Je hoeft niet te ku
    - Helium: `helium://extensions` (werkt dat niet, probeer `chrome://extensions`)
 4. Zet **Ontwikkelaarsmodus** aan.
 5. Klik op **Uitgepakte extensie laden** en kies de uitgepakte map.
-6. Herlaad SOMtoday en open **Cijfers**.
+6. Herlaad SOMtoday of Magister en open **Cijfers**.
 
 Firefox-versie volgt later.
 
@@ -54,7 +54,7 @@ De broncode valt onder de [PolyForm Noncommercial 1.0.0-licentie](LICENSE). Je m
 
 Deel je een kopie of aangepaste versie? Voeg dan het LICENSE-bestand toe en vermeld js664 met een link naar dit project. De precieze regels staan in de licentie.
 
-CijferReveal is een onafhankelijk project. SOMtoday maakt of controleert de extensie niet. Scholen kunnen extensies blokkeren. De werking kan veranderen als SOMtoday wordt aangepast.
+CijferReveal is een onafhankelijk project. SOMtoday en Magister maken of controleren de extensie niet. Scholen kunnen extensies blokkeren. De werking kan veranderen als SOMtoday wordt aangepast.
 
 ## Zelf bouwen
 
@@ -76,3 +76,9 @@ De Firefox-versie wordt gebouwd uit de leesbare bronbestanden. De build maakt da
 3. Voer `npm run build:firefox` uit. De map `dist-firefox` en het bestand `CijferReveal-Firefox.zip` worden gemaakt.
 
 Om de tijdelijke build op Firefox voor computer te laden, open `about:debugging#/runtime/this-firefox`, klik op **Tijdelijke add-on laden…** en kies `dist-firefox/manifest.json`.
+
+## Magister
+
+De Magister-versie heeft een eigen extensie en inventaris. De website waarschuwt voor mogelijke bugs voordat je downloadt; GitHub toont een normale release. Ze toont maximaal 25 recente cijfers in een apart paneel op Cijfers. Dezelfde pack opening ondersteunt cijfers, letters en niveau-aanduidingen. De jaaroverzichten, gemiddelden en home-widgets vallen buiten deze versie.
+
+De leesbare Magister-broncode staat in magister/. Bouw daar met npm ci en npm run build. Diagnostiek verzamelt lokaal technische gebeurtenissen zonder tokens of cijferwaarden. Het paneel is standaard verborgen; voer in de console van Magister window['enable-magister-debug']() uit om het te tonen en window['disable-magister-debug']() om het te verbergen. Download logs (.txt) om een probleem te onderzoeken.

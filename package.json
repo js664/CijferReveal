@@ -1,6 +1,6 @@
 {
   "name": "pack-opening-voor-somtoday",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,10 @@
     "test:e2e": "playwright test",
     "validate": "node scripts/validate.mjs",
     "audit": "npm audit --omit=dev",
-    "check:secrets": "node scripts/check-secrets.mjs"
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "build:magister": "npm --prefix magister run build",
+    "test:magister": "npm --prefix magister test",
+    "sync:magister": "node scripts/sync-magister.mjs"
   },
   "dependencies": {
     "border-beam": "^1.4.1",

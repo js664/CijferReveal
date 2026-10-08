@@ -13,7 +13,7 @@ type Phase='preview'|'starting'|'mystery'|'stopped'|'result'|'error';
 export function OpeningOverlay({result,settings,audio,commit,cancel=async()=>{},replay=false,close,next,position,total,spinPlan}:OpeningProps){
  const reduced=settings.motion==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches;
  const [clock,setClock]=useState<(()=>number)|null>(null),[phase,setPhase]=useState<Phase>('preview');
- const [plan]=useState(()=>spinPlan??createSpinPlan());
+ const [plan]=useState(()=>spinPlan??createSpinPlan(Math.random,undefined,result.value));
  const landed=useCallback(()=>{if(alive.current)setPhase('stopped');},[]);
  const ref=useRef<HTMLDivElement>(null),timer=useRef<ReturnType<typeof setTimeout>|null>(null),alive=useRef(true),starting=useRef(false),committed=useRef(false),cancelRequested=useRef(false),rolledBack=useRef(false);
  const stopped=useCallback(()=>{if(!alive.current)return;audio.reveal(result.grade,settings);setPhase('result');},[audio,result.grade,settings]);

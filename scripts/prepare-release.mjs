@@ -30,6 +30,14 @@ for(const name of expected){
 }
 const packagedManifest=JSON.parse(new TextDecoder().decode(entries['manifest.json']));
 if(packagedManifest.version!==version)throw new Error(`De ZIP bevat manifestversie ${packagedManifest.version}, verwacht ${version}.`);
+const magisterBytes=await readFile('magister/pack-opening-voor-magister.zip'),magisterEntries=unzipSync(new Uint8Array(magisterBytes));
+const magisterManifest=JSON.parse(new TextDecoder().decode(magisterEntries['manifest.json']));
+if(magisterManifest.version!==version||!magisterManifest.name.includes('Magister'))throw new Error('Magister release manifest mismatch.');
+const magisterBuilt=JSON.parse(await readFile('magister/dist/manifest.json','utf8'));
+if(JSON.stringify(magisterManifest)!==JSON.stringify(magisterBuilt))throw new Error('Magister archive does not match the built manifest.');
+for(const [name,bytes] of Object.entries(magisterEntries))if(!Buffer.from(bytes).equals(await readFile(join('magister/dist',name))))throw new Error('Magister archive mismatch: '+name);
+const migration=await readFile('src/state/migrations.ts','utf8'),magisterMigration=await readFile('magister/src/state/migrations.ts','utf8');
+if(migration.replaceAll('\r\n','\n')!==magisterMigration.replaceAll('\r\n','\n'))throw new Error('Magister migration safeguards differ from SOMtoday.');
 const changelog=await readFile('CHANGELOG.md','utf8'),lines=changelog.split(/\r?\n/),section=lines.findIndex(line=>new RegExp(`^## Versie ${version.replaceAll('.','\\.')}\\b`).test(line));
 if(section<0)throw new Error(`Geen Nederlandstalige CHANGELOG-sectie gevonden voor ${version}.`);
 const notes=[];
@@ -37,9 +45,17 @@ for(let i=section+1;i<lines.length&&!/^##\s/.test(lines[i]);i++)notes.push(lines
 const noteText=notes.join('\n').trim();if(!noteText)throw new Error(`De CHANGELOG-sectie voor ${version} is leeg.`);
 await mkdir(outputDirectory,{recursive:true});
 const finalZip=join(resolve(outputDirectory),'CijferReveal.zip');
-await copyFile(zipPath,finalZip);
+await copyFile(zipPath,finalZip);await copyFile('magister/pack-opening-voor-magister.zip',join(resolve(outputDirectory),'CijferReveal-Magister.zip'));
 const finalEntries=unzipSync(new Uint8Array(await readFile(finalZip)));
 if(JSON.parse(new TextDecoder().decode(finalEntries['manifest.json'])).version!==version)throw new Error('De uiteindelijke CijferReveal.zip heeft de verkeerde manifestversie.');
 await writeFile(join(resolve(outputDirectory),'release-notes.md'),`${noteText}\n`,'utf8');
 
 console.log(`Releasepakket gecontroleerd: ${tag}, alleen productiebuild.`);
+await writeFile(join(resolve(outputDirectory),'magister-notes.md'),`## CijferReveal voor Magister ${version}
+
+Nieuwe Magister-extensie met dezelfde resultaatfamilies en pack-openingervaring als SOMtoday. De loginfix is door een tester bevestigd.
+
+Download CijferReveal-Magister.zip, pak uit en laad de map als uitgepakte extensie. De versie toont maximaal 25 recente cijfers; jaaroverzichten en home-widgets zijn niet aangepast.
+
+De nieuwe resultaatfamilies, lokale inventaris, loginbeveiliging en updatechecker zijn inbegrepen. Diagnostiek is verborgen: window['enable-magister-debug']() toont het paneel. De laatste 1500 technische gebeurtenissen blijven lokaal bewaard, zonder tokens of cijferwaarden.
+`);

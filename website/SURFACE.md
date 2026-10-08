@@ -1,18 +1,9 @@
 # Website
 
-Deze notitie beschrijft de website in `website/`. Ze gaat niet over het ontwerp van de extensie; daarvoor is er [design.md](../design.md).
+Donkere downloadpagina met grafiet, zachtblauw en lichte tekst. De kop is CijferReveal Pack Opening; de onderregel noemt SOMtoday en Magister.
 
-## Uiterlijk en inhoud
+De downloadknop vervaagt achter een uitklappende keuze met twee echte links. SOMtoday gebruikt releases/latest/download/CijferReveal.zip; Magister gebruikt releases/download/magister-v__EXTENSION_VERSION__/CijferReveal-Magister.zip. De keuze blijft binnen de knopruimte. Escape, buiten klikken en uitgaande toetsenbordfocus sluiten haar. Minder beweging versnelt de overgangen.
 
-- De stijl is donker en rustig, met grafiet, zachtblauw en lichte tekst.
-- De hoofdkop is **SomToday Pack Opening**.
-- De eerste knop downloadt altijd de nieuwste stabiele ZIP van GitHub: `https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip`.
-- De knoppen voor Chrome en Firefox zijn uitgeschakeld tot de extensies in die winkels staan.
-- De broncodeknop opent het project op GitHub. De knop **Veelgestelde vragen** opent een venster op dezelfde pagina.
-- De site gebruikt systeemlettertypen en ondersteunt toetsenborden en minder beweging.
+Chrome en Firefox storeknoppen blijven uitgeschakeld. De broncodeknop opent GitHub, FAQ opent de bestaande dialoog. GitHub Pages publiceert website/ via deploy-pages.yml.
 
-## Schermen en publicatie
-
-De pagina past zich aan smalle schermen aan. GitHub Pages publiceert de inhoud van `website/` via `.github/workflows/deploy-pages.yml`.
-
-De site staat op https://js664.github.io/CijferReveal/.
+Alleen de website noemt Magister een voorlopige versie. Een Nederlandse dialoog meldt mogelijke bugs en biedt Annuleren of Toch downloaden. GitHub publiceert beide providerpakketten als normale releases; de extensie zelf toont geen voorlopige-statuslabel.

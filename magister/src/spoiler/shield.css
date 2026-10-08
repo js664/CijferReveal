@@ -1,0 +1,5 @@
+/* Login stays native. The content script activates this only on a known grade view. */
+html[data-po-magister-grades] #cijfers-laatst-behaalde-resultaten-container,
+html[data-po-magister-grades] #cijfers-container { display:none !important; }
+html[data-po-magister-grades] .cijfers-k-grid.k-grid { visibility:hidden !important; }
+#po-magister-panel { display:block; width:100%; min-width:0; }

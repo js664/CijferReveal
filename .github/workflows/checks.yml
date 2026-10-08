@@ -23,3 +23,13 @@ jobs:
       - run: npm run validate
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - name: Controleer en bouw Magister
+        working-directory: magister
+        run: |
+          npm ci
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+          npm run validate
+          npm run test:e2e

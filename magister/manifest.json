@@ -1,0 +1,72 @@
+{
+  "manifest_version": 3,
+  "name": "Pack Opening voor Magister",
+  "version": "0.2.8",
+  "description": "Open zichtbare cijfers met een lokale pack opening. Cijfers zijn vooraf bepaald.",
+  "minimum_chrome_version": "111",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://*.magister.net/*",
+    "https://api.github.com/*"
+  ],
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png"
+    },
+    "default_popup": "popup.html",
+    "default_title": "Pack Opening voor Magister"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.magister.net/*"
+      ],
+      "css": [
+        "shield.css"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    },
+    {
+      "matches": [
+        "https://*.magister.net/*"
+      ],
+      "js": [
+        "debug-console.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/case-opening.mp3",
+        "assets/high-grade-accent.mp3"
+      ],
+      "matches": [
+        "https://*.magister.net/*"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

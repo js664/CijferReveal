@@ -86,8 +86,10 @@ Voor tests, ontwikkelbuilds, Firefox en publicatie: [ontwikkelgids](docs/DEVELOP
 
 | Pad | Inhoud |
 | --- | --- |
-| src/, tests/, assets/ | SOMtoday-broncode, tests en gebruikte assets |
-| magister/ | Zelfstandig Magister-project; pas de code hier direct aan |
+| shared/ | Gemeenschappelijke opening, audio, resultaten, inventaris en opslag |
+| src/, tests/ | SOMtoday-adapter en tests voor de adapter en gedeelde core |
+| assets/ | Eén bron voor de audio en iconen van beide extensies |
+| magister/ | Magister-adapter, eigen manifest en providerspecifieke tests |
 | scripts/ | Build-, validatie- en releasehulpmiddelen |
 | website/ | GitHub Pages-downloadpagina |
 | docs/ | Ontwikkelgids en historische documentatie |

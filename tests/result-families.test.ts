@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {familyReelValues,resultFamilies,resultFamilyFor} from '../src/opening/result-families';
+import {familyReelValues,resultFamilies,resultFamilyFor} from '../shared/opening/result-families';
 const seeded=(seed:number)=>()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
 it.each(['O','V','G'])('does not guess which overlapping assessment scale owns %s',value=>expect(resultFamilyFor(value)).toBeUndefined());
 it('recognizes the unique O/V/G/ZG assessment value',()=>expect(resultFamilyFor('ZG')?.id).toBe('assessment'));

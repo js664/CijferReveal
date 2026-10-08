@@ -2,7 +2,7 @@ import {it,expect} from 'vitest';
 import {dateVariants,joinCard} from '../src/somtoday/dom-join';
 import {projectResponse} from '../src/somtoday/projection';
 import {matchResource} from '../src/somtoday/resources';
-import {parseSomtodayDate} from '../src/somtoday/date-parser';
+import {parseSomtodayDate} from '../shared/results/date-parser';
 import {record,rawRecord} from './fixtures';
 const resource=matchResource('https://api.somtoday.nl/rest/v1/geldendvoortgangsdossierresultaten/leerling/another-student','https://leerling.somtoday.nl')!;
 const tuple={subject:'Wiskunde A',subtitle:'4 okt • Hoofdstuk 3',weight:'2x',value:'8,3'};

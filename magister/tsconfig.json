@@ -24,6 +24,7 @@
     "src",
     "tests",
     "vite.config.ts",
-    "playwright.magister.config.ts"
+    "playwright.magister.config.ts",
+    "../shared"
   ]
 }

@@ -1,5 +1,5 @@
 import {it,expect,vi,afterEach} from 'vitest';
-import {createSpinPlan,reelProgress,ReelEngine,ORIGINAL_SPIN_MS} from '../src/opening/ReelEngine';
+import {createSpinPlan,reelProgress,ReelEngine,ORIGINAL_SPIN_MS} from '../shared/opening/ReelEngine';
 const seeded=(seed:number)=>()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
 it.each(['4,8','5.5','7','8,4','10'])('keeps numeric reel generation unchanged for %s',value=>{
  const previous=createSpinPlan(seeded(918)),withValue=createSpinPlan(seeded(918),undefined,value);

@@ -1,4 +1,4 @@
-import {Bridge} from './bridge';
+import {Bridge} from '../../shared/content/bridge';
 import {Experience} from './mount';
 import {joinCard,explainCard} from '../somtoday/dom-join';
 import {readCardTuple} from '../somtoday/dom-card';
@@ -7,7 +7,7 @@ import {presentDerived,presentOverview} from '../spoiler/derived';
 import {injectInventoryTab,type InventoryTabController} from '../collection/CollectionTab';
 import {listenRoutes} from './route-controller';
 import {syncUpdateNotice,disposeUpdateNotice} from './update-notice';
-import type {State} from '../state/schema';
+import type {State} from '../../shared/state/schema';
 import {diagnose,diagnosticReport,diagnosticStage,isConcealed,updateCardDiagnostic} from '../dev/diagnostics';
 // Start the version lookup on the SOMtoday landing page, before the user opens Cijfers.
 syncUpdateNotice();

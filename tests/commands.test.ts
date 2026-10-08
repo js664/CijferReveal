@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {authorizeCommand} from '../src/state/commands';
+import {authorizeCommand} from '../shared/state/commands';
 import {record,key,scope,version} from './fixtures';
 const id='a'.repeat(32),popup={id,url:`chrome-extension://${id}/popup.html`},content={id,url:'https://leerling.somtoday.nl/cijfers',frameId:0,tab:{id:1} as chrome.tabs.Tab};
 const message=(command:unknown)=>({protocol:'po/storage',command});

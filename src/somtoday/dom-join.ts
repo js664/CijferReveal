@@ -1,7 +1,7 @@
-import type {ResultRecord} from './types';
-import {normalizeGradeValue,parseGrade} from './grade-parser';
+import type {ResultRecord} from '../../shared/results/types';
+import {normalizeGradeValue,parseGrade} from '../../shared/results/grade-parser';
 import {recordIdentityKey} from './identity';
-import {parseSomtodayDate} from './date-parser';
+import {parseSomtodayDate} from '../../shared/results/date-parser';
 export const normalize=(v:string)=>v.normalize('NFKC').toLocaleLowerCase('nl-NL').replace(/\s+/g,' ').trim();
 const dateLabel=(v:string)=>normalize(v).replace(/\b([a-z]+)\./g,'$1').replace(/\b0([1-9])\b/g,'$1');
 const calendarDay=(date:Date)=>Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000;

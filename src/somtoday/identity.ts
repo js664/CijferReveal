@@ -1,5 +1,4 @@
-import type {ResultRecord} from './types';
-export function recordIdentityKey(record:ResultRecord):string{return JSON.stringify([record.family,record.id,record.variant??null]);}
+export {digest,recordIdentityKey} from '../../shared/results/identity';
 export function getCanonicalResultIdentity(record: unknown): {id:string;type:string} | null {
  if(!record || typeof record!=='object')return null;
  const r=record as Record<string,unknown>;
@@ -16,8 +15,4 @@ export function getCanonicalResultIdentity(record: unknown): {id:string;type:str
  if(!id||id.length>256||typeof l.type!=='string'||!l.type.startsWith('resultaten.')||l.type.length>160)return null;
  if(r.$type!==undefined && r.$type!==l.type)return null;
  return {id,type:l.type};
-}
-export async function digest(salt:string,...parts:string[]):Promise<string>{
- const bytes=new TextEncoder().encode(JSON.stringify([salt,...parts]));
- return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
 }

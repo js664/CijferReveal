@@ -1,4 +1,4 @@
-import {compareStableVersions} from '../shared/version';
+import {compareStableVersions} from '../../../shared/version';
 export type MagisterUpdate={update:boolean;version:string;url:string;prerelease:boolean};
 export function magisterRelease(current:string,release:unknown):MagisterUpdate|null{
  if(!release||typeof release!=='object')return null;const r=release as {tag_name?:unknown;html_url?:unknown;draft?:unknown;prerelease?:unknown;assets?:unknown};

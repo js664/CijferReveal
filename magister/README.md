@@ -1,15 +1,14 @@
 # CijferReveal voor Magister
 
-Dit is het zelfstandige Magister-project binnen [CijferReveal](../README.md). Download CijferReveal-Magister.zip via [de website](https://js664.github.io/CijferReveal/) of de gezamenlijke GitHub-release.
+Dit is de Magister-adapter binnen [CijferReveal](../README.md). Download CijferReveal-Magister.zip via [de website](https://js664.github.io/CijferReveal/) of de gezamenlijke GitHub-release.
 
 Het paneel toont maximaal 25 recente cijfers. Openingen, geluid, resultaatfamilies, lokale inventaris en replay zijn inbegrepen. Jaaroverzichten, gemiddelden en home-widgets zijn niet aangepast. Login- en callbackschermen blijven native; het paneel start pas na een geslaagde eigen Magister-cijferaanvraag.
 
 ## Zelf bouwen
 
-Installeer Node.js 22.12 of nieuwer. Vanuit deze magister-map:
+Installeer Node.js 22.12 of nieuwer. Installeer eerst vanuit de hoofdmap npm ci en npm --prefix magister ci. Voer daarna vanuit deze magister-map uit:
 
 ~~~sh
-npm ci
 npm run typecheck
 npm run lint
 npm test
@@ -24,7 +23,7 @@ npx playwright install chromium
 npm run test:e2e
 ~~~
 
-Je kunt ook de hoofdmapcommando's uit de [README](../README.md#zelf-bouwen) gebruiken. Pas Magister direct in deze map aan; een externe kopie is niet nodig. Zie de [ontwikkelgids](../docs/DEVELOPMENT.md) voor Firefox, ontwikkelbuilds en releases.
+Je kunt ook de hoofdmapcommando's uit de [README](../README.md#zelf-bouwen) gebruiken. Pas Magister-integratie in deze map aan. Algemene opening, audio, resultaatfamilies en opslag staan in ../shared/ en assets in ../assets/. Een externe kopie is niet nodig. Zie de [ontwikkelgids](../docs/DEVELOPMENT.md) voor Firefox, ontwikkelbuilds en releases.
 
 ## Diagnostiek en updates
 

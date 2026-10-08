@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
-import {filterInventory,inventoryStats,inventorySubjects,tierLabel} from '../src/collection/model';
-import type {CollectionEntry} from '../src/state/schema';
+import {filterInventory,inventoryStats,inventorySubjects,tierLabel} from '../shared/collection/model';
+import type {CollectionEntry} from '../shared/state/schema';
 
 const entries:CollectionEntry[]=[
  {key:'a',version:'1',scope:'x',subject:'Wiskunde A',description:'Hoofdstuk 3',date:'2026-09-28',weight:'2',value:'8,3',grade:8.3,openedAt:300},

@@ -1,5 +1,5 @@
 import {readFile,writeFile,copyFile,readdir,mkdir} from 'node:fs/promises';
-import {resolve,join} from 'node:path';
+import {resolve,join,dirname} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {unzipSync} from 'fflate';
 
@@ -36,8 +36,12 @@ if(magisterManifest.version!==version||!magisterManifest.name.includes('Magister
 const magisterBuilt=JSON.parse(await readFile('magister/dist/manifest.json','utf8'));
 if(JSON.stringify(magisterManifest)!==JSON.stringify(magisterBuilt))throw new Error('Magister archive does not match the built manifest.');
 for(const [name,bytes] of Object.entries(magisterEntries))if(!Buffer.from(bytes).equals(await readFile(join('magister/dist',name))))throw new Error('Magister archive mismatch: '+name);
-const migration=await readFile('src/state/migrations.ts','utf8'),magisterMigration=await readFile('magister/src/state/migrations.ts','utf8');
-if(migration.replaceAll('\r\n','\n')!==magisterMigration.replaceAll('\r\n','\n'))throw new Error('Magister migration safeguards differ from SOMtoday.');
+const canonicalMigration=resolve('shared/state/migrations.ts');
+for(const entry of ['src/state/migrations.ts','magister/src/state/migrations.ts']){
+ const source=await readFile(entry,'utf8'),match=source.match(/export \{migrate\} from ['"]([^'"]+)['"]/);
+ if(!match||resolve(dirname(entry),match[1]+'.ts')!==canonicalMigration)throw new Error('Provider does not include the canonical migration safeguards: '+entry);
+}
+await readFile(canonicalMigration,'utf8');
 const changelog=await readFile('CHANGELOG.md','utf8'),lines=changelog.split(/\r?\n/),section=lines.findIndex(line=>new RegExp(`^## Versie ${version.replaceAll('.','\\.')}\\b`).test(line));
 if(section<0)throw new Error(`Geen Nederlandstalige CHANGELOG-sectie gevonden voor ${version}.`);
 const notes=[];

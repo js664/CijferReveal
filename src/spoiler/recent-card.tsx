@@ -1,7 +1,7 @@
 import {createRoot} from 'react-dom/client';
 import {motion} from 'motion/react';
-import type {DisplayResult,ResultRecord} from '../somtoday/types';
-import type {Lifecycle} from '../state/schema';
+import type {DisplayResult,ResultRecord} from '../../shared/results/types';
+import type {Lifecycle} from '../../shared/state/schema';
 import {cardFields,fieldTextNodes} from '../somtoday/dom-card';
 export interface Presentation { host:HTMLElement;update:(result:ResultRecord|null,status:Lifecycle|undefined,display:DisplayResult|undefined,onOpen:(result:DisplayResult,origin:HTMLElement)=>void,onRetry?:()=>void)=>void;dispose:()=>void; }
 const MASK='?';

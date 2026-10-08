@@ -1,0 +1,74 @@
+{
+  "schema": 2,
+  "salt": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "resetGeneration": 4,
+  "aliases": {
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+      "scope": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "family": "progression",
+      "rawVersion": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "signature": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "logicalKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "numeric": true,
+      "firstSeen": 1,
+      "display": {
+        "key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "version": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "subject": "Fixture subject",
+        "description": "Fixture assessment",
+        "date": "2026-10-04T10:00:00+02:00",
+        "weight": "2",
+        "value": "8,3",
+        "grade": 8.3
+      },
+      "openedSignature": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  },
+  "records": {
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+      "key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scope": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "version": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "state": "opened",
+      "numeric": true,
+      "firstSeen": 1,
+      "lastResolvedState": "pending",
+      "display": {
+        "key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "version": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "subject": "Fixture subject",
+        "description": "Fixture assessment",
+        "date": "2026-10-04T10:00:00+02:00",
+        "weight": "2",
+        "value": "8,3",
+        "grade": 8.3
+      }
+    }
+  },
+  "coverage": {
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+      "overview": true,
+      "subject": true,
+      "armed": false
+    }
+  },
+  "collection": [
+    {
+      "key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "subject": "Fixture subject",
+      "description": "Fixture assessment",
+      "date": "2026-10-04T10:00:00+02:00",
+      "weight": "2",
+      "value": "8,3",
+      "grade": 8.3,
+      "scope": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "openedAt": 2
+    }
+  ],
+  "settings": {
+    "sound": false,
+    "volume": 0.42,
+    "motion": "reduce"
+  }
+}

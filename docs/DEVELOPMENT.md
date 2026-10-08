@@ -4,7 +4,13 @@ De [README](../README.md#zelf-bouwen) bevat de installatie en productiebuilds. V
 
 ## Broncode
 
-SOMtoday gebruikt src/; Magister gebruikt magister/src/. Beide projecten hebben eigen manifests, dependencies en tests. Werk direct in het juiste project. De algemene opening, resultaatfamilies en opslagcode zijn voorlopig nog gekopieerd: controleer beide projecten als je daar wijzigingen aanbrengt. Het samenvoegen van die code is een afzonderlijke refactor.
+De gedeelde code staat in shared/: opening en geluid, resultaatfamilies en parsers, inventariscomponenten, de bridge en lokale opslag. Audio en iconen staan eenmalig in assets/. Scripts/build-extension.mjs bouwt beide providerpakketten; de twee build-entrypoints bevatten alleen hun configuratie.
+
+SOMtoday houdt zijn API/DOM-adapter onder src/; Magister onder magister/src/. Beiden gebruiken dezelfde opslagtransacties en validatie. Magister injecteert zijn eigen origin-policy en diagnostiek, en zijn loginroute, credential-capture en paneel blijven providerspecifiek. De SOMtoday-inventarismontage blijft bij de SOMtoday-adapter.
+
+De twee src/state/migrations.ts-entrypoints verwijzen naar shared/state/migrations.ts. Behoud alle validatie in die gedeelde implementatie. Persistente poState-opslag, schema 2, salt, identity-hashes, aliases en inventarisvelden zijn ongewijzigd; een moduleverplaatsing is geen reden om inventarissen te resetten.
+
+Installeer vanuit de hoofdmap npm ci en npm --prefix magister ci. De adapters behouden hun eigen npm-testconfiguratie, maar hebben de gedeelde bestanden en hoofdmap-dependencies nodig. Identieke core-tests draaien eenmaal in tests/; magister/tests/ bevat de Magister-specifieke gevallen.
 
 ## Controles
 
@@ -21,7 +27,7 @@ npm run validate
 npm run validate:magister
 ~~~
 
-De validatie controleert manifest, rechten, verpakte bestanden en ZIP-inhoud. De releasevoorbereiding controleert bovendien dat de migratiebeveiligingen voor lokale opslag overeenkomen. Behoud de controles voor records, aliases, inventaris, instellingen en metadata in beide state/migrations.ts-bestanden.
+De validatie controleert manifest, rechten, verpakte bestanden en ZIP-inhoud. De releasevoorbereiding controleert bovendien dat de migratiebeveiligingen voor lokale opslag overeenkomen. Behoud de controles voor records, aliases, inventaris, instellingen en metadata in shared/state/migrations.ts.
 
 ## Browsertests
 

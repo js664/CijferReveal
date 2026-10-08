@@ -1,4 +1,4 @@
-import type {Family, Surface} from './types';
+import type {Family, Surface} from '../../shared/results/types';
 export interface Resource { family: Family; surface: Surface; scopeInput: string | null; }
 const segment = '[A-Za-z0-9_-]+';
 const rules: [RegExp, Surface, Family, number | null][] = [

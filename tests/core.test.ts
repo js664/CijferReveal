@@ -1,9 +1,9 @@
 import {describe,it,expect} from 'vitest';
-import {parseGrade} from '../src/somtoday/grade-parser';
+import {parseGrade} from '../shared/results/grade-parser';
 import {getCanonicalResultIdentity,digest} from '../src/somtoday/identity';
 import {projectResponse} from '../src/somtoday/projection';
 import {matchResource} from '../src/somtoday/resources';
-import {validateObservation} from '../src/somtoday/schemas';
+import {validateObservation} from '../shared/results/schemas';
 import {joinCard} from '../src/somtoday/dom-join';
 import {rawRecord,record} from './fixtures';
 const origin='https://leerling.somtoday.nl';

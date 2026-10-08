@@ -1,7 +1,7 @@
 import {matchResource} from '../somtoday/resources';
 import {projectResponse} from '../somtoday/projection';
 import {digest} from '../somtoday/identity';
-import type {Observation} from '../somtoday/types';
+import type {Observation} from '../../shared/results/types';
 let salt:string|null=null;
 const pending:(()=>void)[]=[];
 const excludedRoute=()=>/^\/cijfers\/(?:vakgemiddelden|vakresultaten)(?:\/|$)/i.test(location.pathname);

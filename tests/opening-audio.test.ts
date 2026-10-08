@@ -1,6 +1,6 @@
 import {it,expect,vi,afterEach} from 'vitest';
-import {OpeningAudio,ORIGINAL_TICK_OFFSET,ORIGINAL_TICK_DURATION,ORIGINAL_REVEAL_OFFSET} from '../src/opening/audio';
-import {createSpinPlan,ORIGINAL_SPIN_MS} from '../src/opening/ReelEngine';
+import {OpeningAudio,ORIGINAL_TICK_OFFSET,ORIGINAL_TICK_DURATION,ORIGINAL_REVEAL_OFFSET} from '../shared/opening/audio';
+import {createSpinPlan,ORIGINAL_SPIN_MS} from '../shared/opening/ReelEngine';
 
 afterEach(()=>vi.unstubAllGlobals());
 it('plays the complete original opening cue and pauses the audio clock with the visual clock',async()=>{

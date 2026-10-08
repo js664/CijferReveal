@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {authorizeCommand} from '../src/state/commands';
-import {record,key,scope,version} from './fixtures';
+import {record,key,scope,version} from '../../tests/fixtures';
 const id='a'.repeat(32),popup={id,url:`chrome-extension://${id}/popup.html`},content={id,url:'https://school.magister.net/cijfers',frameId:0,tab:{id:1} as chrome.tabs.Tab};
 const message=(command:unknown)=>({protocol:'po/storage',command});
 const observation={kind:'observe',scope,surface:'recent',inputs:[{record:record(),key,scope,version}]};

@@ -1,11 +1,11 @@
 import {it,expect,vi,afterEach} from 'vitest';
-import {Bridge} from '../src/content/bridge';
-import {command} from '../src/state/repository';
-import {newState} from '../src/state/schema';
-import {classify,markOpened,collection,queue} from '../src/state/classifier';
-import {LIVE_PROFILE} from '../src/somtoday/validation-profile';
+import {Bridge} from '../shared/content/bridge';
+import {command} from '../shared/state/repository';
+import {newState} from '../shared/state/schema';
+import {classify,markOpened,collection,queue} from '../shared/state/classifier';
+import {LIVE_PROFILE} from '../shared/results/validation-profile';
 import {record} from './fixtures';
-vi.mock('../src/state/repository',()=>({command:vi.fn()}));
+vi.mock('../shared/state/repository',()=>({command:vi.fn()}));
 afterEach(()=>vi.clearAllMocks());
 it('switching accounts isolates the live queue and archive, even when result IDs match',async()=>{
  const state=newState();vi.mocked(command).mockImplementation(async c=>{if(c.kind==='observe')for(const input of c.inputs)classify(state,input,LIVE_PROFILE);return state;});

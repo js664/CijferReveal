@@ -1,9 +1,9 @@
 import {it,expect} from 'vitest';
-import {newState,defaultSettings} from '../src/state/schema';
-import {migrate} from '../src/state/migrations';
-import {classify,markOpened} from '../src/state/classifier';
+import {newState,defaultSettings} from '../shared/state/schema';
+import {migrate} from '../shared/state/migrations';
+import {classify,markOpened} from '../shared/state/classifier';
 import {record,key,scope,version} from './fixtures';
-import {LIVE_PROFILE} from '../src/somtoday/validation-profile';
+import {LIVE_PROFILE} from '../shared/results/validation-profile';
 
 function opened(){
  const state=newState();

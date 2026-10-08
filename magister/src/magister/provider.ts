@@ -1,6 +1,6 @@
-import type {ResultRecord} from '../somtoday/types';
-import {parseGrade,normalizeGradeValue} from '../somtoday/grade-parser';
-import {validRecord} from '../somtoday/schemas';
+import type {ResultRecord} from '../../../shared/results/types';
+import {parseGrade,normalizeGradeValue} from '../../../shared/results/grade-parser';
+import {validRecord} from '../../../shared/results/schemas';
 import {debug} from './debug';
 
 export function magisterOrigin(value:string):string|null {

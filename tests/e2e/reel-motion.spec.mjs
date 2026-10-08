@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {ORIGINAL_MAIN_TICKS_MS} from '../../src/opening/choreography.ts';
+import {ORIGINAL_MAIN_TICKS_MS} from '../../shared/opening/choreography.ts';
 
 test('all landing variants center the real grade and sound every forward and return crossing',async({page})=>{
  test.setTimeout(40000);

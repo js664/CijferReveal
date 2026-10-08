@@ -1,8 +1,8 @@
 import {it,expect,vi,beforeEach,afterEach} from 'vitest';
-import {newState,type State} from '../src/state/schema';
-import {classify,markOpened,cancelOpened} from '../src/state/classifier';
-import {LIVE_PROFILE} from '../src/somtoday/validation-profile';
-import {record,key,scope,version} from './fixtures';
+import {newState,type State} from '../../shared/state/schema';
+import {classify,markOpened,cancelOpened} from '../../shared/state/classifier';
+import {LIVE_PROFILE} from '../../shared/results/validation-profile';
+import {record,key,scope,version} from '../../tests/fixtures';
 const id='a'.repeat(32),popup={id,url:`chrome-extension://${id}/popup.html`},content={id,url:'https://school.magister.net/cijfers',frameId:0,tab:{id:1} as chrome.tabs.Tab};
 type Reply={ok:boolean;state?:State;error?:string};
 type Listener=(message:unknown,sender:chrome.runtime.MessageSender,reply:(response:Reply)=>void)=>true|undefined;

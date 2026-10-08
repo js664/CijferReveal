@@ -1,16 +1,17 @@
+import './configure-diagnostics';
 import type {MagisterUpdate} from './release-update';
 import {installDebugPanel} from './debug-panel';
 import {debug,errorData} from './debug';
 import {createRoot} from 'react-dom/client';
 import {useState} from 'react';
-import {Bridge} from '../content/bridge';
-import {Experience} from '../content/mount';
+import {Bridge} from '../../../shared/content/bridge';
+import {Experience} from '../../../shared/content/experience';
 import {listenRoutes} from '../content/route-controller';
-import {digest} from '../somtoday/identity';
-import {validateObservation} from '../somtoday/schemas';
-import type {ResultRecord,DisplayResult} from '../somtoday/types';
-import type {State} from '../state/schema';
-import uiCSS from '../shared/ui.css?inline';
+import {digest} from '../../../shared/results/identity';
+import {validateObservation} from '../../../shared/results/schemas';
+import type {ResultRecord,DisplayResult} from '../../../shared/results/types';
+import type {State} from '../../../shared/state/schema';
+import uiCSS from '../../../shared/ui.css?inline';
 import panelCSS from './panel.css?inline';
 import {gradeRoute,gradeAnchor,loginVisible,nativeGradeSelector} from './lifecycle';
 
@@ -25,7 +26,7 @@ let availableUpdate:MagisterUpdate|null=null,updateChecked=false;
 async function checkUpdate(){if(updateChecked||!authenticated)return;updateChecked=true;try{const result=await chrome.runtime.sendMessage({protocol:'po/check-magister-update'}) as MagisterUpdate|null;if(result?.update&&/^\d+\.\d+\.\d+$/.test(result.version)&&result.url===`https://github.com/js664/CijferReveal/releases/tag/v${result.version}`){availableUpdate=result;render();}}catch(reason){debug('update.notice-failed',errorData(reason),'warn');}}
 const hidden=new Map<HTMLElement,{inert:boolean;aria:string|null}>();
 const bridge=new Bridge(render,()=>{debug('bridge.failed',{},'error');error='Lokale opslag is niet beschikbaar. Laad de pagina opnieuw.';render();},false);
-const experience=new Experience(()=>bridge.state,()=>bridge.refresh(),()=>new Set([...bridge.records.values()].filter(item=>item.scope===bridge.activeScope&&bridge.state?.records[item.key]?.version===item.version).map(item=>item.key)));
+const experience=new Experience(()=>bridge.state,()=>bridge.refresh(),{brand:'Pack Opening voor Magister',preloadAudio:false,keepInteractive:node=>node.hasAttribute('data-po-debug'),visibleResults:()=>new Set([...bridge.records.values()].filter(item=>item.scope===bridge.activeScope&&bridge.state?.records[item.key]?.version===item.version).map(item=>item.key))});
 const dates=new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'short',year:'numeric'});
 const displayDate=(value:string)=>Number.isFinite(Date.parse(value))?dates.format(new Date(value)):'Datum onbekend';
 function Panel(){

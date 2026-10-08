@@ -1,5 +1,5 @@
-import type {ResultRecord} from '../src/somtoday/types';
-import type {ValidationProfile} from '../src/somtoday/validation-profile';
+import type {ResultRecord} from '../shared/results/types';
+import type {ValidationProfile} from '../shared/results/validation-profile';
 export const fixtureProfile:ValidationProfile={numericValidated:true,selfTypes:['resultaten.RGeldendVoortgangsdossierResultaat'],individualColumnTypes:['fixture-individual'],baselineCoverageValidated:true};
 export const record=(patch:Partial<ResultRecord>={}):ResultRecord=>({id:'fixture-result-a',selfType:'resultaten.RGeldendVoortgangsdossierResultaat',type:'resultaten.RGeldendVoortgangsdossierResultaat',family:'progression',value:'8,3',isCijfer:true,isLabel:false,subject:'Wiskunde A',subjectId:'fixture-subject',description:'Hoofdstuk 3',date:'2026-10-04T10:00:00+02:00',weight:'2',period:'1',testCode:'H3',columnType:'fixture-individual',aggregate:false,...patch});
 export const key='a'.repeat(64),scope='b'.repeat(64),version='c'.repeat(64);

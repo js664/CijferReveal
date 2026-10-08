@@ -1,8 +1,8 @@
 import {it,expect} from 'vitest';
-import {newState} from '../src/state/schema';
-import {migrate} from '../src/state/migrations';
-import {classify,noteCoverage,queue,markOpened,collection,resetOpenedResults} from '../src/state/classifier';
-import {LIVE_PROFILE} from '../src/somtoday/validation-profile';
+import {newState} from '../shared/state/schema';
+import {migrate} from '../shared/state/migrations';
+import {classify,noteCoverage,queue,markOpened,collection,resetOpenedResults} from '../shared/state/classifier';
+import {LIVE_PROFILE} from '../shared/results/validation-profile';
 import {record,fixtureProfile,key,scope,version} from './fixtures';
 const input=(value='8,3',v=version,k=key)=>({record:record({value}),key:k,scope,version:v});
 it('a uniquely matched numeric result on first install is an openable pack',()=>{const s=newState();classify(s,input(),fixtureProfile);expect(s.records[key].state).toBe('pending');expect(s.records[key].display?.value).toBe('8,3');expect(queue(s,scope)).toHaveLength(1);expect(s.collection).toEqual([]);});

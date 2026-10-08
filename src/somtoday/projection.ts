@@ -1,7 +1,7 @@
 import {getCanonicalResultIdentity} from './identity';
-import {normalizeGradeValue,parseGrade} from './grade-parser';
+import {normalizeGradeValue,parseGrade} from '../../shared/results/grade-parser';
 import type {Resource} from './resources';
-import type {ResultRecord} from './types';
+import type {ResultRecord} from '../../shared/results/types';
 const obj=(v:unknown):Record<string,unknown>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,unknown>:{};
 const text=(v:unknown,max=300):string=>typeof v==='string'&&v.length<=max?v:typeof v==='number'&&Number.isFinite(v)?String(v):'';
 // Match SOMtoday's own gp() formatter, without accepting arbitrary suffixes.

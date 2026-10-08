@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
-import {compareStableVersions} from '../src/shared/version';
-import {releaseUpdate} from '../src/shared/release-update';
+import {compareStableVersions} from '../shared/version';
+import {releaseUpdate} from '../shared/release-update';
 
 it('detects a newer stable release and ignores equal or older versions',()=>{
  expect(compareStableVersions('0.2.3','v0.2.4')).toBe(-1);

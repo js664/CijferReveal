@@ -13,13 +13,7 @@ export function safeData(value:unknown):DebugEntry['data']{
  }
  return data;
 }
-export function errorData(error:unknown){
- const name=error instanceof Error?error.name:'UnknownError';
- const errorName=['Error','TypeError','RangeError','SyntaxError','AbortError','TimeoutError','SecurityError','NotAllowedError','QuotaExceededError','InvalidStateError'].includes(name)?name:'UnknownError';
- const message=error instanceof Error?error.message:'';
- const issue=/fetch|network/i.test(message)?'network':/context invalidated|receiving end|message port/i.test(message)?'extension-connection':/quota/i.test(message)?'quota':/json/i.test(message)?'json':/abort|timeout/i.test(message)?'timeout':'unspecified';
- return {errorName,issue};
-}
+export {errorData} from '../../../shared/diagnostics';
 export function debug(event:string,data:unknown={},level:DebugLevel='info'){
  if(!/^[a-z][a-z0-9.-]{0,79}$/.test(event))return;
  const entry:DebugEntry={time:new Date().toISOString(),source,level,event,data:safeData(data)};

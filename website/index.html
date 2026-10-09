@@ -144,6 +144,8 @@
       }
       .store-button:disabled { opacity: .78; }
       .store-button:disabled:hover { background: #171e27; border-color: #ffffff20; transform: none; box-shadow: none; }
+      a.store-button { color: var(--ink); cursor: pointer; }
+      .store-button small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
       .brand-note { margin-top: 18px; color: #82909f; font-size: 11px; line-height: 1.55; text-align: left; }
       .brand-note summary { width: fit-content; margin: 0 auto; cursor: pointer; text-underline-offset: 3px; }
@@ -239,10 +241,10 @@
         <img src="assets/chrome.webp" width="24" height="24" alt="" aria-hidden="true" />
         <span>Chrome Web Store — Binnenkort</span>
       </button>
-      <button class="repo-link store-button" type="button" disabled aria-disabled="true">
+      <a class="repo-link store-button" href="https://addons.mozilla.org/addon/pack-opening-voor-somtoday/" target="_blank" rel="noopener noreferrer">
         <img src="assets/firefox.svg" width="24" height="24" alt="" aria-hidden="true" />
-        <span>Firefox — Binnenkort</span>
-      </button>
+        <span>Firefox — SOMtoday<small>Download via Mozilla Add-ons</small></span>
+      </a>
       <a class="repo-link" href="https://github.com/js664/CijferReveal" target="_blank" rel="noopener noreferrer">
         <span class="link-end">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.08c-3.1.67-3.75-1.32-3.75-1.32-.5-1.29-1.24-1.63-1.24-1.63-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.14 3.54 1.63.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.15a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.15 3.04-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3.01 0 4.29-2.61 5.23-5.1 5.5.4.34.75 1 .75 2.02v3c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>
@@ -272,8 +274,12 @@
         <p>Zet in Windows <strong>Animatie-effecten</strong> aan via <strong>Instellingen → Toegankelijkheid → Visuele effecten</strong>. Herlaad daarna SOMtoday of Magister.</p>
       </details>
       <details>
-        <summary>Wanneer staat CijferReveal in de Chrome Web Store en Firefox Add-ons?</summary>
-        <p>We verwachten dat CijferReveal op <strong>10 oktober 2026</strong> in beide winkels staat.</p>
+        <summary>Is CijferReveal beschikbaar via Mozilla Add-ons?</summary>
+        <p>De SOMtoday-versie is beschikbaar via de Firefox-knop op deze pagina. De Magister-versie is nog niet beschikbaar via Mozilla Add-ons.</p>
+      </details>
+      <details>
+        <summary>Wanneer staat CijferReveal in de Chrome Web Store?</summary>
+        <p>We verwachten dat CijferReveal op <strong>10 oktober 2026</strong> in de Chrome Web Store staat.</p>
       </details>
     </dialog>
     <noscript><p><a href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip">Download SOMtoday</a> · <a href="https://github.com/js664/CijferReveal/releases/latest">Download Magister — voorlopige versie</a></p></noscript>

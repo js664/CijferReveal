@@ -15,7 +15,7 @@ Dit werkt op een computer met Chrome, Edge, Brave of Helium.
 5. Klik op **Uitgepakte extensie laden** en kies de uitgepakte map met manifest.json.
 6. Herlaad SOMtoday of Magister en open **Cijfers**.
 
-Firefox-builds zijn beschikbaar voor tijdelijke developer-installatie; zie de [ontwikkelgids](docs/DEVELOPMENT.md#firefox).
+Firefox-builds zijn beschikbaar voor tijdelijke developer-installatie; zie [Firefox](#firefox).
 
 ## Cijfers openen
 
@@ -54,12 +54,12 @@ Installeer Node.js **22.12 of nieuwer** en Git. Haal de broncode op en installee
 
 ~~~sh
 git clone https://github.com/js664/CijferReveal.git
-cd CijferReveal
+cd CijferReveal/extension
 npm ci
 npm --prefix magister ci
 ~~~
 
-Bouw vanuit de hoofdmap:
+Bouw vanuit de map extension/:
 
 ~~~sh
 npm run build
@@ -80,25 +80,76 @@ npm run validate
 npm run validate:magister
 ~~~
 
-Voor tests, ontwikkelbuilds, Firefox en publicatie: [ontwikkelgids](docs/DEVELOPMENT.md).
+Voor tests, ontwikkelbuilds, Firefox en publicatie: [ontwikkeling](#ontwikkeling).
 
 ## Projectindeling
 
 | Pad | Inhoud |
 | --- | --- |
-| shared/ | Gemeenschappelijke opening, audio, resultaten, inventaris en opslag |
-| src/, tests/ | SOMtoday-adapter en tests voor de adapter en gedeelde core |
-| assets/ | Eén bron voor de audio en iconen van beide extensies |
-| magister/ | Magister-adapter, eigen manifest en providerspecifieke tests |
-| scripts/ | Build-, validatie- en releasehulpmiddelen |
+| extension/src/ | SOMtoday-adapter |
+| extension/magister/ | Magister-adapter, manifest en tests |
+| extension/shared/ | Gedeelde animaties, audio, resultaten, inventaris en opslag |
+| extension/assets/ | Audio, iconen en bronvermelding |
+| extension/tests/ | SOMtoday- en gedeelde tests |
+| extension/scripts/ | Build, validatie, secretcontrole en releasevoorbereiding |
 | website/ | GitHub Pages-downloadpagina |
-| docs/ | Ontwikkelgids en historische documentatie |
-| .github/workflows/ | Automatische controles, gezamenlijke releases en websitepublicatie |
+| .github/workflows/ | Controles, releases en websitepublicatie |
+
+## Ontwikkeling
+
+Voer alle npm-commando's uit vanuit extension/. Gebruik Node.js 22.12 of nieuwer.
+
+~~~sh
+npm run typecheck
+npm run lint
+npm test
+npm --prefix magister run typecheck
+npm --prefix magister run lint
+npm run test:magister
+npm run check:secrets
+~~~
+
+Voor het lokale animatie-testscherm: npm run dev en open tester.html op het getoonde adres.
+Ontwikkelbuilds worden gemaakt met npm run build:dev en npm --prefix magister run build:dev.
+Publiceer alleen productiebuilds.
+
+Voor browsertests:
+
+~~~sh
+npx playwright install chromium
+npm run build
+npm run build:magister
+npm run build:dev
+npm run test:e2e
+npm run test:e2e:magister
+~~~
+
+### Firefox
+
+~~~sh
+npm run build:firefox
+npm --prefix magister run build:firefox
+~~~
+
+Laad dist-firefox/manifest.json of magister/dist-firefox/manifest.json via
+about:debugging#/runtime/this-firefox en **Tijdelijke add-on laden**. Dit zijn ongetekende developer-builds.
+
+### Releases en lokale opslag
+
+Werk voor een release de versie in package.json, package-lock.json en manifest.json van
+beide projecten bij en voeg release-notities toe aan CHANGELOG.md.
+Voer alle controles en browsertests uit. Een stabiele tag vX.Y.Z activeert de gezamenlijke
+releaseworkflow, die beide productie-ZIPs bouwt en publiceert.
+Voor lokale voorbereiding: node scripts/prepare-release.mjs vX.Y.Z release-packages/X.Y.Z.
+
+Beide adapters gebruiken extension/shared/state/migrations.ts. Behoud de validatie van
+opgeslagen records, aliases, inventarisvelden, instellingen en metadata. Een broncodeverplaatsing
+mag inventarissen niet resetten.
 
 ## Privacy en licentie
 
-Cijfers en instellingen blijven op je apparaat en worden niet naar de maker gestuurd. SOMtoday gebruikt antwoorden die de schoolwebsite zelf ophaalt. Magister vraagt recente cijfers op bij je eigen schoolomgeving met een tijdelijk in het geheugen gehouden Authorization-header. Lees de [privacyverklaring](PRIVACY.md).
+Cijfers en instellingen blijven op je apparaat en worden niet naar de maker gestuurd. SOMtoday gebruikt antwoorden die de schoolwebsite zelf ophaalt. Magister vraagt recente cijfers op bij je eigen schoolomgeving met een tijdelijk in het geheugen gehouden Authorization-header. Lees de [privacyverklaring](extension/PRIVACY.md).
 
-De broncode valt onder de [PolyForm Noncommercial 1.0.0-licentie](LICENSE). Je mag gebruiken, aanpassen en delen voor niet-commerciële doelen volgens die licentie. Commercieel gebruik vereist toestemming van js664. Voeg bij delen de licentie en bronvermelding toe; behoud ook de [notices](THIRD_PARTY_NOTICES.txt).
+De broncode valt onder de [PolyForm Noncommercial 1.0.0-licentie](extension/LICENSE). Je mag gebruiken, aanpassen en delen voor niet-commerciële doelen volgens die licentie. Commercieel gebruik vereist toestemming van js664. Voeg bij delen de licentie en bronvermelding toe; behoud ook de [notices](extension/THIRD_PARTY_NOTICES.txt).
 
-CijferReveal is onafhankelijk van SOMtoday en Magister. Scholen kunnen extensies blokkeren; wijzigingen aan de schoolwebsite kunnen aanpassingen vereisen. Zie [CHANGELOG.md](CHANGELOG.md) voor wijzigingen.
+CijferReveal is onafhankelijk van SOMtoday en Magister. Scholen kunnen extensies blokkeren; wijzigingen aan de schoolwebsite kunnen aanpassingen vereisen. Zie [CHANGELOG.md](extension/CHANGELOG.md) voor wijzigingen.

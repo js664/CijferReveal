@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "website/**"
-      - "manifest.json"
+      - "extension/manifest.json"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -34,7 +34,7 @@ jobs:
         run: |
           node --input-type=module -e '
             import {readFileSync, writeFileSync} from "node:fs";
-            const {version} = JSON.parse(readFileSync("manifest.json", "utf8"));
+            const {version} = JSON.parse(readFileSync("extension/manifest.json", "utf8"));
             if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error("Ongeldige extensieversie");
             const path = "website/index.html";
             const html = readFileSync(path, "utf8");

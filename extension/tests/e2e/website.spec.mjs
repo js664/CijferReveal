@@ -3,7 +3,7 @@ import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {mkdir} from 'node:fs/promises';
 test('provider chooser expands over the blurred button with keyboard and mobile support',async({page})=>{
- await page.goto(pathToFileURL(resolve('website/index.html')).href);
+ await page.goto(pathToFileURL(resolve('../website/index.html')).href);
  const trigger=page.getByRole('button',{name:/Download de nieuwste versie/}),som=page.locator('.provider-option').nth(0),magister=page.locator('.provider-option').nth(1);
  await expect(som).not.toBeVisible();await trigger.click();await expect(som).toBeVisible();await expect(som).toBeFocused();await expect(trigger).toHaveAttribute('aria-expanded','true');
  await expect.poll(()=>trigger.evaluate(node=>getComputedStyle(node).filter)).toContain('blur(5px)');

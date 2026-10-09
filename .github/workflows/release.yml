@@ -11,6 +11,9 @@ permissions:
 jobs:
   verify-and-release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
     steps:
       - name: Haal exact de releasecommit op
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -22,6 +25,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: extension/package-lock.json
       - name: Controleer tag, versie en commit
         shell: bash
         run: |
@@ -50,7 +54,7 @@ jobs:
       - name: Browser tests
         run: npm run test:e2e
       - name: Controleer en bouw Magister
-        working-directory: magister
+        working-directory: extension/magister
         run: |
           npm ci
           npm run typecheck

@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
-const html=readFileSync('website/index.html','utf8');
+const html=readFileSync('../website/index.html','utf8');
 const page=new DOMParser().parseFromString(html,'text/html');
 it('offers two provider downloads behind an accessible chooser',()=>{
  const trigger=page.querySelector('.download-trigger')!;

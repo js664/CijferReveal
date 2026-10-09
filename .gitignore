@@ -22,17 +22,22 @@ playwright-report/
 *.har
 *.log
 SOMtoday-local-grade-test.user.js
-assets/opening-start.mp3
-assets/reel-tick.mp3
-assets/reveal-impact.mp3
-assets/inventory-music*
+extension/assets/opening-start.mp3
+extension/assets/reel-tick.mp3
+extension/assets/reveal-impact.mp3
+extension/assets/inventory-music*
 SHA256SUMS.txt
 dist-snapshot-*/
 
 release-packages/
-magister/verification/
-magister/assets/*.wav
-magister/assets/opening-start.mp3
-magister/assets/reel-tick.mp3
-magister/assets/reveal-impact.mp3
-magister/assets/inventory-music*
+extension/magister/verification/
+extension/magister/assets/*.wav
+extension/magister/assets/opening-start.mp3
+extension/magister/assets/reel-tick.mp3
+extension/magister/assets/reveal-impact.mp3
+extension/magister/assets/inventory-music*
+
+# Agent instructions and personal planning files stay local.
+AGENTS.md
+PRODUCT.md
+design.md

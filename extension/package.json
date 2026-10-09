@@ -10,7 +10,7 @@
     "build:snapshot": "node scripts/build.mjs --snapshot",
     "build:dev": "node scripts/build.mjs --dev",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . && cd ../website && eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "validate": "node scripts/validate.mjs",

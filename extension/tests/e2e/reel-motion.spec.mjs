@@ -49,9 +49,10 @@ test('all landing variants center the real grade and sound every forward and ret
     const index=Math.floor(c.boundary),expected=c.direction<0?ticks.at(-1)?.when:index<24?begin+originalTicks[index]/1000:ticks[index-24]?.when;
     return Math.abs(c.time-expected)*1000;
    }).filter(Number.isFinite);
-   return {starts,frameCount:frames.length,tickEnergy:Math.max(...frames.map(f=>f.energy)),maxReverse:Math.max(...frames.slice(1).map((f,i)=>f.time<begin+window.reelLanding.approachMs/1000-.08?f.position-frames[i].position:0)),landing:window.reelLanding,ticks:ticks.length,errors,begin};
+   return {starts,tickEnergy:Math.max(...frames.map(f=>f.energy)),maxReverse:Math.max(...frames.slice(1).map((f,i)=>f.time<begin+window.reelLanding.approachMs/1000-.08?f.position-frames[i].position:0)),landing:window.reelLanding,ticks:ticks.length,errors,begin};
   },ORIGINAL_MAIN_TICKS_MS);
-  expect(report.frameCount).toBeGreaterThan(80);expect(report.tickEnergy).toBeGreaterThan(.001);expect(report.maxReverse).toBeLessThan(.1);
+  // Check crossing coverage below instead of assuming a fixed frame rate on CI.
+  expect(report.tickEnergy).toBeGreaterThan(.001);expect(report.maxReverse).toBeLessThan(.1);
   expect(report.landing.inside).toBe(true);expect(report.landing.centerError).toBeLessThan(1);expect(report.landing.mode).toBe(mode);expect(report.ticks).toBe(report.landing.target-4-24+(mode==='near-miss'?2:0));
   expect(report.starts.filter(s=>s.offset===0&&s.clipDuration===3.5&&s.duration>7&&s.duration<9)).toHaveLength(1);
   expect(report.starts.filter(s=>s.offset===6.47&&s.clipDuration===null)).toHaveLength(1);

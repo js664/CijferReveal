@@ -147,6 +147,11 @@
       a.store-button { color: var(--ink); cursor: pointer; }
       .store-button small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
       .store-button img { width: 24px; height: 24px; flex: none; object-fit: contain; }
+      .store-button.download-link small { color: #34485d; }
+      .manual-download { margin-top: 22px; text-align: left; }
+      .manual-download > summary { color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0; }
+      .manual-download > summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+      .manual-download .download-chooser { margin-top: 12px; }
       .brand-note { margin-top: 18px; color: #82909f; font-size: 11px; line-height: 1.55; text-align: left; }
       .brand-note summary { width: fit-content; margin: 0 auto; cursor: pointer; text-underline-offset: 3px; }
       .brand-note p { max-width: 38ch; margin: 8px auto 0; font-size: 11px; line-height: 1.55; }
@@ -223,24 +228,10 @@
       <div class="mark" aria-hidden="true">CR</div>
       <h1>CijferReveal<br />Pack Opening</h1>
       <p class="provider-intro">Voor SOMtoday en Magister.</p>
-      <div class="download-chooser">
-      <button class="repo-link download-link download-trigger" type="button" aria-expanded="false" aria-controls="download-options">
-        <span class="link-end">
-          <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
-          <span>Download de nieuwste versie</span>
-        </span>
-        <span class="download-version" aria-label="Versie v__EXTENSION_VERSION__">v__EXTENSION_VERSION__</span>
-        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
-      </button>
-        <div class="download-options" id="download-options" role="group" aria-label="Kies je schoolomgeving" inert>
-          <a class="provider-option" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip"><span>SOMtoday</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 18v2h14v-2"/></svg></a>
-          <a class="provider-option" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal-Magister.zip"><span>Magister<small>Voorlopige versie</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 18v2h14v-2"/></svg></a>
-        </div>
-      </div>
-      <button class="repo-link store-button" type="button" disabled aria-disabled="true">
+      <a class="repo-link download-link store-button" href="https://chromewebstore.google.com/detail/cijferreveal-voor-somtoda/jkeojbochgppoajlapjbhhhckcciojgj" target="_blank" rel="noopener noreferrer">
         <img src="assets/chrome.webp" width="24" height="24" alt="" aria-hidden="true" />
-        <span>Chrome Web Store — Binnenkort</span>
-      </button>
+        <span>Chrome Web Store<small>Installeer voor SOMtoday en Magister</small></span>
+      </a>
       <a class="repo-link store-button" href="https://addons.mozilla.org/addon/pack-opening-voor-somtoday/" target="_blank" rel="noopener noreferrer">
         <img src="assets/firefox.svg" width="24" height="24" alt="" aria-hidden="true" />
         <span>Firefox — SOMtoday<small>Download via Mozilla Add-ons</small></span>
@@ -256,6 +247,24 @@
         <span>Veelgestelde vragen</span>
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
+      <details class="manual-download">
+        <summary>Handmatig downloaden (ZIP)</summary>
+      <div class="download-chooser">
+      <button class="repo-link download-link download-trigger" type="button" aria-expanded="false" aria-controls="download-options">
+        <span class="link-end">
+          <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
+          <span>Download ZIP</span>
+        </span>
+        <span class="download-version" aria-label="Versie v__EXTENSION_VERSION__">v__EXTENSION_VERSION__</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </button>
+        <div class="download-options" id="download-options" role="group" aria-label="Kies je schoolomgeving" inert>
+          <a class="provider-option" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip"><span>SOMtoday</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 18v2h14v-2"/></svg></a>
+          <a class="provider-option" href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal-Magister.zip"><span>Magister<small>Voorlopige versie</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 18v2h14v-2"/></svg></a>
+        </div>
+      </div>
+        <noscript><p><a href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip">Download SOMtoday</a> · <a href="https://github.com/js664/CijferReveal/releases/latest">Download Magister — voorlopige versie</a></p></noscript>
+      </details>
       <details class="brand-note">
         <summary>Merkinformatie</summary>
         <p>Chrome is een merk van Google. Firefox is een merk van Mozilla Foundation. CijferReveal staat los van beide.</p>
@@ -278,11 +287,10 @@
         <p>De SOMtoday-versie is beschikbaar via de Firefox-knop op deze pagina. De Magister-versie is nog niet beschikbaar via Mozilla Add-ons.</p>
       </details>
       <details>
-        <summary>Wanneer staat CijferReveal in de Chrome Web Store?</summary>
-        <p>We verwachten dat CijferReveal op <strong>10 oktober 2026</strong> in de Chrome Web Store staat.</p>
+        <summary>Is CijferReveal beschikbaar in de Chrome Web Store?</summary>
+        <p>Ja! De universele CijferReveal-extensie voor SOMtoday en Magister is beschikbaar via de Chrome-knop bovenaan deze pagina.</p>
       </details>
     </dialog>
-    <noscript><p><a href="https://github.com/js664/CijferReveal/releases/latest/download/CijferReveal.zip">Download SOMtoday</a> · <a href="https://github.com/js664/CijferReveal/releases/latest">Download Magister — voorlopige versie</a></p></noscript>
     <dialog class="faq-dialog prerelease-dialog" id="magister-warning" aria-labelledby="magister-warning-title">
       <h2 id="magister-warning-title">Magister — voorlopige versie</h2>
       <p>Deze versie is nog in testfase. Er kunnen fouten optreden, ook bij het inloggen. De loginfix is getest, maar andere schoolomgevingen kunnen anders reageren.</p>
